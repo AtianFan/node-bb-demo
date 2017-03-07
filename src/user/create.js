@@ -26,11 +26,13 @@ module.exports = function (User) {
 			var userData = {
 				'username': data.username,
 				'userslug': data.userslug,
+				'userlogin': data.userlogin,
 				'email': data.email || '',
 				'joindate': timestamp,
 				'lastonline': timestamp,
 				'picture': '',
 				'fullname': data.fullname || '',
+				'userjobnumber': data.userjobnumber || '',
 				'location': '',
 				'birthday': '',
 				'website': '',
@@ -85,6 +87,9 @@ module.exports = function (User) {
 							},
 							function (next) {
 								db.sortedSetAdd('userslug:uid', userData.uid, userData.userslug, next);
+							},
+							function (next) {
+								db.sortedSetAdd('userlogin:uid', userData.uid, userData.userlogin, next);
 							},
 							function (next) {
 								var sets = ['users:joindate', 'users:online'];

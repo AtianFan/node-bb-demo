@@ -55,7 +55,7 @@ module.exports = function (User) {
 				if (!exists) {
 					return callback();
 				}
-				User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], next);
+				User.getUserFields(uid, ['username', 'userslug', 'userlogin', 'fullname', 'email'], next);
 			},
 			function (_userData, next)  {
 				userData = _userData;
@@ -80,6 +80,9 @@ module.exports = function (User) {
 					},
 					function (next) {
 						db.sortedSetRemove('userslug:uid', userData.userslug, next);
+					},
+					function (next) {
+						db.sortedSetRemove('userlogin:uid', userData.userlogin, next);
 					},
 					function (next) {
 						db.sortedSetRemove('fullname:uid', userData.fullname, next);

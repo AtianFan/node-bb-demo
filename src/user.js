@@ -175,6 +175,12 @@ var meta = require('./meta');
 		});
 	};
 
+	User.existsByLogin = function (userlogin, callback) {
+		User.getUidByUserLogin(userlogin, function (err, exists) {
+			callback(err, !! exists);
+		});
+	};
+
 	User.getUidByUsername = function (username, callback) {
 		if (!username) {
 			return callback(null, 0);
@@ -191,6 +197,20 @@ var meta = require('./meta');
 			return callback(null, 0);
 		}
 		db.sortedSetScore('userslug:uid', userslug, callback);
+	};
+
+	User.getUidByUserLogin = function (userlogin, callback) {
+		if (!userlogin) {
+			return callback(null, 0);
+		}
+		db.sortedSetScore('userlogin:uid', userlogin, callback);
+	};
+
+	User.getUidByUserLogin = function (userlogin, callback) {
+		if (!userlogin) {
+			return callback(null, 0);
+		}
+		db.sortedSetScore('userlogin:uid', userlogin, callback);
 	};
 
 	User.getUsernamesByUids = function (uids, callback) {

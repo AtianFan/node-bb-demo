@@ -46,7 +46,7 @@ module.exports = function (Posts) {
 				});
 				async.parallel({
 					users: function (next) {
-						user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+						user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'picture'], next);
 					},
 					topicsAndCategories: function (next) {
 						getTopicAndCategories(topicKeys, next);

@@ -52,7 +52,8 @@ function minifyScripts(scripts, callback) {
 	try {
 		var minified = uglifyjs.minify(scripts, {
 				// outSourceMap: "nodebb.min.js.map",
-				compress: false
+				compress: false,
+				mangle: false
 			});
 
 		callback(minified.code/*, minified.map*/);

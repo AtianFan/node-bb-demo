@@ -38,6 +38,8 @@ authenticationController.register = function (req, res, next) {
 		}
 	}
 
+	userData.userlogin = userData.username;
+
 	async.waterfall([
 		function (next) {
 			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
@@ -227,7 +229,7 @@ authenticationController.login = function (req, res, next) {
     };
     var dn = 'uid='+ req.body.username +',dc=staff,dc=zmp,dc=com';
 
-	user.existsBySlug(req.body.username, function (err, exists) {
+	user.existsByLogin(req.body.username, function (err, exists) {
 		if (err) {
 			return callback(err);
 		}
@@ -258,10 +260,11 @@ authenticationController.login = function (req, res, next) {
 									'password-confirm': req.body.password,
 									'referrer': "http://localhost:4567/login",
 									'token': "",
-									'username': ldapuser.uid,
-									'fullname': ldapuser.staffName
+									'username': ldapuser.staffName,
+									'fullname': ldapuser.staffName,
+									'userlogin': ldapuser.uid,
+									'userjobnumber': ldapuser.uid,
 								}
-								// user.create(userData, next);
 								async.waterfall([
 										function (next1) {
 											user.create(userData, next1);
@@ -279,6 +282,7 @@ authenticationController.login = function (req, res, next) {
 						  res2.on('error', function(err) {
 						      //unbind操作，必须要做
 						      client.unbind();
+						      res.status(403).send(err.message);
 						  });
 						  
 						  //查询结束
@@ -430,20 +434,98 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 	});
 };
 
-authenticationController.localLogin = function (req, username, password, next) {
-	if (!username) {
+// authenticationController.localLogin = function (req, username, password, next) {
+// 	if (!username) {
+// 		return next(new Error('[[error:invalid-username]]'));
+// 	}
+
+// 	var userslug = utils.slugify(username);
+// 	var uid, userData = {};
+
+// 	async.waterfall([
+// 		function (next) {
+// 			user.isPasswordValid(password, next);
+// 		},
+// 		function (next) {
+// 			user.getUidByUserslug(userslug, next);
+// 		},
+// 		function (_uid, next) {
+// 			if (!_uid) {
+// 				return next(new Error('[[error:no-user]]'));
+// 			}
+// 			uid = _uid;
+// 			user.auth.logAttempt(uid, req.ip, next);
+// 		},
+// 		function (next) {
+// 			async.parallel({
+// 				userData: function (next) {
+// 					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
+// 				},
+// 				isAdmin: function (next) {
+// 					user.isAdministrator(uid, next);
+// 				},
+// 				banned: function (next) {
+// 					user.isBanned(uid, next);
+// 				}
+// 			}, next);
+// 		},
+// 		function (result, next) {
+// 			userData = result.userData;
+// 			userData.uid = uid;
+// 			userData.isAdmin = result.isAdmin;
+
+// 			if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
+// 				return next(new Error('[[error:local-login-disabled]]'));
+// 			}
+// 			if (!userData || !userData.password) {
+// 				return next(new Error('[[error:invalid-user-data]]'));
+// 			}
+// 			if (result.banned) {
+// 				// Retrieve ban reason and show error
+// 				return user.getLatestBanInfo(uid, function (err, banInfo) {
+// 					if (err) {
+// 						if (err.message === 'no-ban-info') {
+// 							next(new Error('[[error:user-banned]]'));
+// 						} else {
+// 							next(err);
+// 						}
+// 					} else if (banInfo.reason) {
+// 						next(new Error('[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+// 					} else {
+// 						next(new Error('[[error:user-banned]]'));
+// 					}
+// 				});
+// 			}
+
+// 			Password.compare(password, userData.password, next);
+// 		},
+// 		function (passwordMatch, next) {
+// 			if (!passwordMatch) {
+// 				return next(new Error('[[error:invalid-password]]'));
+// 			}
+// 			user.auth.clearLoginAttempts(uid);
+// 			next(null, userData, '[[success:authentication-successful]]');
+// 		}
+// 	], next);
+// };
+//更改登录策略，新增userlogin:uid,检测userlogin是否存在
+authenticationController.localLogin = function (req, userlogin, password, next) {
+	if (!userlogin) {
 		return next(new Error('[[error:invalid-username]]'));
 	}
 
-	var userslug = utils.slugify(username);
+	var userlogin = utils.slugify(userlogin);
 	var uid, userData = {};
 
 	async.waterfall([
 		function (next) {
 			user.isPasswordValid(password, next);
 		},
+		// function (next) {
+		// 	user.getUidByUserslug(userslug, next);
+		// },
 		function (next) {
-			user.getUidByUserslug(userslug, next);
+			user.getUidByUserLogin(userlogin, next);
 		},
 		function (_uid, next) {
 			if (!_uid) {

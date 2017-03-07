@@ -59,7 +59,7 @@ module.exports = function (Topics) {
 					return array.indexOf(uid) === index;
 				});
 
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+				user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'picture'], next);
 			},
 			function (usersData, next) {
 				var users = {};
