@@ -260,7 +260,7 @@ authenticationController.login = function (req, res, next) {
 									'password-confirm': req.body.password,
 									'referrer': "http://localhost:4567/login",
 									'token': "",
-									'username': ldapuser.staffName,
+									'username': ldapuser.workEmail.split('@')[0],
 									'fullname': ldapuser.staffName,
 									'userlogin': ldapuser.uid,
 									'userjobnumber': ldapuser.uid,
