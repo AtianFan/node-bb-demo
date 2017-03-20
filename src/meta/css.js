@@ -162,7 +162,7 @@ module.exports = function (Meta) {
 				return callback(err);
 			}
 
-			postcss([ autoprefixer, clean() ]).process(lessOutput.css).then(function (result) {
+			postcss([ autoprefixer, clean({processImportFrom: ['local']}) ]).process(lessOutput.css).then(function (result) {
 				result.warnings().forEach(function (warn) {
 					winston.verbose(warn.toString());
 				});
