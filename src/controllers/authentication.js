@@ -22,6 +22,7 @@ var controllers = {
 };
 
 var authenticationController = {};
+var isNoPasswordLogin = false;
 
 authenticationController.register = function (req, res, next) {
 	var registrationType = meta.config.registrationType || 'normal';
@@ -264,8 +265,22 @@ authenticationController.login = function (req, res, next) {
 									'fullname': ldapuser.staffName,
 									'userlogin': ldapuser.uid,
 									'userjobnumber': ldapuser.uid,
-								}
+								};
+								isNoPasswordLogin = true;
 								async.waterfall([
+										function (next1){
+											user.email.available(userData.email, function (err, available) {
+												if (err) {
+													return next(err);
+												}
+												if(!available){
+													req.body.username = userData.email;
+													next()
+												}else{
+													next1()
+												}
+											});
+										},
 										function (next1) {
 											user.create(userData, next1);
 										},
@@ -514,7 +529,7 @@ authenticationController.localLogin = function (req, userlogin, password, next) 
 		return next(new Error('[[error:invalid-username]]'));
 	}
 
-	var userlogin = utils.slugify(userlogin);
+	var userlogin = utils.slugify(userlogin, true);
 	var uid, userData = {};
 
 	async.waterfall([
@@ -575,7 +590,11 @@ authenticationController.localLogin = function (req, userlogin, password, next) 
 				});
 			}
 
-			Password.compare(password, userData.password, next);
+			if(!isNoPasswordLogin){
+				Password.compare(password, userData.password, next);
+			}else{
+				next(null,true);
+			}
 		},
 		function (passwordMatch, next) {
 			if (!passwordMatch) {

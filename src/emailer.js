@@ -39,7 +39,7 @@ var fallbackTransport;
 				// 	pass: meta.config['email:GmailTransport:pass']
 				// }
 				host: 'mail.ztesoft.com',
-				port: 456,
+				port: 25,
 				secure: true,
 				debug: true,
 				logger: true,
