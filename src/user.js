@@ -206,13 +206,6 @@ var meta = require('./meta');
 		db.sortedSetScore('userlogin:uid', userlogin, callback);
 	};
 
-	User.getUidByUserLogin = function (userlogin, callback) {
-		if (!userlogin) {
-			return callback(null, 0);
-		}
-		db.sortedSetScore('userlogin:uid', userlogin, callback);
-	};
-
 	User.getUsernamesByUids = function (uids, callback) {
 		User.getUsersFields(uids, ['username'], function (err, users) {
 			if (err) {

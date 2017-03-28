@@ -230,6 +230,18 @@ authenticationController.login = function (req, res, next) {
     };
     var dn = 'uid='+ req.body.username +',dc=staff,dc=zmp,dc=com';
 
+    //先验证邮件登录是否可行
+    if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
+		user.getUsernameByEmail(req.body.username, function (err, username) {
+			if (err) {
+				return next(err);
+			}
+			req.body.username = username ? username : req.body.username;
+			continueLogin(req, res, next);
+		});
+		return;
+	}
+
 	user.existsByLogin(req.body.username, function (err, exists) {
 		if (err) {
 			return callback(err);
