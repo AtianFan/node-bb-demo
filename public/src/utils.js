@@ -87,11 +87,12 @@
 				return '';
 			}
 			str = str.replace(utils.trimRegex, '');
-			if(utils.isLatin.test(str)) {
-				str = str.replace(utils.invalidLatinChars, '-');
-			} else {
-				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
-			}
+			//会过滤.，因此先删除
+			// if(utils.isLatin.test(str)) {
+			// 	str = str.replace(utils.invalidLatinChars, '-');
+			// } else {
+			// 	str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
+			// }
 			str = !preserveCase ? str.toLocaleLowerCase() : str;
 			str = str.replace(utils.collapseWhitespace, '-');
 			str = str.replace(utils.collapseDash, '-');

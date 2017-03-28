@@ -247,7 +247,9 @@ var meta = require('./meta');
 			if (err) {
 				return callback(err);
 			}
-			User.getUserField(uid, 'username', callback);
+			//邮箱登录时查找userlogin:uid对应的username
+			User.getUserField(uid, 'userlogin', callback);
+			// User.getUserField(uid, 'username', callback);
 		});
 	};
 
