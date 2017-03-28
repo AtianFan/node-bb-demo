@@ -40,7 +40,7 @@ var fallbackTransport;
 				// }
 				host: 'mail.ztesoft.com',
 				port: 25,
-				secure: true,
+				secure: false,
 				debug: true,
 				logger: true,
 				auth: {
