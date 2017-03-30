@@ -43,6 +43,7 @@ var fallbackTransport;
 				secure: false,
 				debug: true,
 				logger: true,
+				ignoreTLS: true,
 				auth: {
 					user: meta.config['email:GmailTransport:user'],
 					pass: meta.config['email:GmailTransport:pass']
