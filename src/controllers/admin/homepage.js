@@ -47,6 +47,10 @@ homePageController.get = function (req, res, next) {
 			{
 				route: 'popular',
 				name: 'Popular'
+			},
+			{
+				route: 'index',
+				name: 'ZTEIndex'
 			}
 		].concat(categoryData)}, function (err, data) {
 			if (err) {

@@ -63,6 +63,7 @@ function tagRoutes(app, middleware, controllers) {
 }
 
 function categoryRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/index', middleware, [], controllers.zteindex.list);
 	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
 	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.popular.get);
 	setupPageRoute(app, '/recent/:filter?', middleware, [], controllers.recent.get);

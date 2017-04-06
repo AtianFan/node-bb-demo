@@ -14,6 +14,7 @@ var Controllers = {
 	topics: require('./topics'),
 	posts: require('./posts'),
 	categories: require('./categories'),
+	zteindex: require('./zteindex'),
 	category: require('./category'),
 	unread: require('./unread'),
 	recent: require('./recent'),
@@ -49,7 +50,9 @@ Controllers.home = function (req, res, next) {
 			return plugins.fireHook(hook, {req: req, res: res, next: next});
 		}
 
-		if (route === 'categories' || route === '/') {
+		if (route === 'index' || route === '/') {
+			Controllers.zteindex.list(req, res, next);
+		} else if (route === 'categories') {
 			Controllers.categories.list(req, res, next);
 		} else if (route === 'unread') {
 			Controllers.unread.get(req, res, next);
