@@ -1,5 +1,12 @@
 <!-- IF posts.display_moderator_tools -->
 <li role="presentation" class="dropdown-header">[[topic:tools]]</li>
+<!-- IF posts.display_bignews_tools -->
+<li role="presentation">
+	<a component="post/bignews" role="menuitem" tabindex="-1" href="#">
+		<span class="menu-icon"><i class="fa fa-pencil"></i></span> [[topic:bignews]]
+	</a>
+</li>
+<!-- ENDIF posts.display_bignews_tools -->
 <li role="presentation">
 	<a component="post/edit" role="menuitem" tabindex="-1" href="#">
 		<span class="menu-icon"><i class="fa fa-pencil"></i></span> [[topic:edit]]

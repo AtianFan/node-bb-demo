@@ -45,6 +45,7 @@ define('forum/topic/postTools', [
 					return app.alertError(err.message);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
+				data.posts.display_bignews_tools = index === 0 ? true : false;
 
 				templates.parse('partials/topic/post-menu-list', data, function (html) {
 					translator.translate(html, function (html) {
@@ -134,6 +135,20 @@ define('forum/topic/postTools', [
 			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
 				$(window).trigger('action:composer.post.edit', {
 					pid: getData(btn, 'data-pid')
+				});
+			}
+		});
+
+		postContainer.on('click', '[component="post/bignews"]', function () {
+			var btn = $(this);
+
+			var timestamp = parseInt(getData(btn, 'data-timestamp'), 10);
+			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
+
+			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
+				$(window).trigger('action:composer.post.bignews', {
+					pid: getData(btn, 'data-pid'),
+					bignews: true
 				});
 			}
 		});
