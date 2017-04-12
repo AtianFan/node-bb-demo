@@ -41,6 +41,9 @@ module.exports = function (SocketPosts) {
 					},
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
+					},
+					isBignews: function (next) {
+						topics.isBignews(data.tid, next)
 					}
 				}, next);
 			},

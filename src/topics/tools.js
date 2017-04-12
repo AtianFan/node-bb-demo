@@ -23,6 +23,30 @@ module.exports = function (Topics) {
 		toggleDelete(tid, uid, false, callback);
 	};
 
+	topicTools.revoke = function (tid, uid, callback) {
+		callback = callback || function () {};
+
+		async.waterfall([
+			function (next) {
+				Topics.setTopicField(tid, 'bignews', false, next);
+			},
+			function (next) {
+				db.sortedSetRemove('topics:bignews', tid, next);
+			},
+			function (next) {
+				var data = {
+					tid: tid,
+					bignews: false,
+					uid: uid
+				};
+
+				plugins.fireHook('action:topic.revoke', data);
+
+				next(null, data);
+			}
+		], callback);
+	};
+
 	function toggleDelete(tid, uid, isDelete, callback) {
 		var topicData;
 		async.waterfall([

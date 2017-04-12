@@ -30,6 +30,7 @@ var social = require('./social');
 	require('./topics/tools')(Topics);
 	require('./topics/thumb')(Topics);
 	require('./topics/bookmarks')(Topics);
+	require('./topics/bignews')(Topics);
 
 	Topics.exists = function (tid, callback) {
 		db.isSortedSetMember('topics:tid', tid, callback);

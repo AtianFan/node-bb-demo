@@ -52,6 +52,20 @@ module.exports = function (Posts) {
 				Posts.setPostFields(data.pid, postData, next);
 			},
 			function (next) {
+				if (data.bignews) {
+					topics.setTopicField(postData.tid, 'bignews', true, next);
+				} else {
+					next()
+				}
+			},
+			function (next) {
+				if (data.bignews) {
+					db.sortedSetAdd('topics:bignews', Date.now(), postData.tid, next);
+				} else {
+					next()
+				}
+			},
+			function (next) {
 				async.parallel({
 					editor: function (next) {
 						user.getUserFields(data.uid, ['username', 'userslug'], next);
@@ -147,7 +161,8 @@ module.exports = function (Posts) {
 						slug: topicData.slug,
 						isMainPost: true,
 						renamed: title !== results.topic.title,
-						tags: tags
+						tags: tags,
+						bignews: data.bignews ? data.bignews : undefined
 					});
 				}
 			], callback);

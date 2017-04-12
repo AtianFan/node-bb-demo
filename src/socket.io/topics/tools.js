@@ -53,6 +53,10 @@ module.exports = function (SocketTopics) {
 		SocketTopics.doTopicAction('restore', 'event:topic_restored', socket, data, callback);
 	};
 
+	SocketTopics.revoke = function (socket, data, callback) {
+		SocketTopics.doTopicAction('revoke', 'event:topic_revoked', socket, data, callback);
+	};
+
 	SocketTopics.purge = function (socket, data, callback) {
 		SocketTopics.doTopicAction('purge', 'event:topic_purged', socket, data, callback);
 	};

@@ -267,7 +267,6 @@ authenticationController.login = function (req, res, next) {
 								//获取查询的对象
 								var ldapuser = entry.object;
 								var ldapuserText = JSON.stringify(ldapuser,null,2);
-								console.log(ldapuser);
 								var userData = {
 									'email': ldapuser.workEmail,
 									'password': req.body.password,
@@ -325,7 +324,6 @@ authenticationController.login = function (req, res, next) {
 				}
 			},
 			function (_uid, next) {
-				console.log(_uid);
 				if (req.body.username && utils.isEmailValid(req.body.username) && loginWith.indexOf('email') !== -1) {
 					user.getUsernameByEmail(req.body.username, function (err, username) {
 						if (err) {

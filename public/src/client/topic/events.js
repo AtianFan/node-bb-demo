@@ -21,6 +21,7 @@ define('forum/topic/events', [
 		'event:topic_deleted': threadTools.setDeleteState,
 		'event:topic_restored': threadTools.setDeleteState,
 		'event:topic_purged': onTopicPurged,
+		'event:topic_revoked': onTopicRevoked,
 
 		'event:topic_locked': threadTools.setLockedState,
 		'event:topic_unlocked': threadTools.setLockedState,
@@ -89,6 +90,13 @@ define('forum/topic/events', [
 		}
 	}
 
+	function onTopicRevoked(data) {
+		console.log('onTopicRevoked')
+		components.get('post/revoke').toggleClass('hidden');
+		components.get('post/bignews').toggleClass('hidden', data.bignews);
+		$('[component="post/header"] i.fa-trophy').toggleClass('hidden', !data.bignews);
+	}
+
 	function onTopicMoved(data) {
 		if (data && data.slug) {
 			ajaxify.go('topic/' + data.slug, null, true);
@@ -109,6 +117,15 @@ define('forum/topic/events', [
 		var topicTitle = components.get('topic/title');
 		var navbarTitle = components.get('navbar/title').find('span');
 		var breadCrumb = components.get('breadcrumb/current');
+
+		if(data.topic.bignews){
+			var revokeEl = components.get('post/revoke');
+			var bignewsEl = components.get('post/bignews');
+
+			bignewsEl.toggleClass('hidden');
+			revokeEl.toggleClass('hidden', false);
+			$('[component="post/header"] i.fa-trophy').toggleClass('hidden', !data.bignews);
+		}
 
 		if (topicTitle.length && data.topic.title && topicTitle.html() !== data.topic.title) {
 			ajaxify.data.title = data.topic.title;

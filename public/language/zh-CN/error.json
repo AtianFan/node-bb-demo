@@ -60,6 +60,7 @@
     "cant-delete-topic-has-replies": "您不能删除您的主题，因为已有 %1 条回复。",
     "content-too-short": "请增添发帖内容，不能少于 %1 个字符。",
     "content-too-long": "请删减发帖内容，不能超过 %1 个字符。",
+    "bignews-no-img": "请至少为您的头条添加一张图片",
     "title-too-short": "请增加标题，不能少于 %1 个字符。",
     "title-too-long": "请缩减标题，不超过 %1 个字符。",
     "category-not-selected": "未选择版块。",
