@@ -204,6 +204,7 @@ var social = require('./social');
 				topicData.postSharing = results.postSharing;
 				topicData.related = results.related || [];
 
+				topicData.bignews = topicData.bignews === 'true' ? true : false;
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
 				topicData.locked = parseInt(topicData.locked, 10) === 1;

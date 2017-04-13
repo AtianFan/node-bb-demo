@@ -124,7 +124,7 @@ define('forum/topic/events', [
 
 			bignewsEl.toggleClass('hidden');
 			revokeEl.toggleClass('hidden', false);
-			$('[component="post/header"] i.fa-trophy').toggleClass('hidden', !data.bignews);
+			$('[component="post/header"] i.fa-trophy').toggleClass('hidden', false);
 		}
 
 		if (topicTitle.length && data.topic.title && topicTitle.html() !== data.topic.title) {
