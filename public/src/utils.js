@@ -440,6 +440,13 @@
 					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
 					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
 				);
+		},
+
+		getFirstImg: function (str) {
+			var result = str.match(/<img[^>]+>/g);
+			return result.find(function(num){
+				return num.indexOf('emoji') == -1;
+			})
 		}
 	};
 
