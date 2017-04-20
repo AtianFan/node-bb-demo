@@ -30,6 +30,8 @@ categoriesController.get = function (req, res, next) {
 				return next(err);
 			}
 			data.category.name = translator.escape(String(data.category.name));
+			//设置模板值
+			data.category.tpl = data.category.tpl ? data.category.tpl : 'default';
 			res.render('admin/manage/category', {
 				category: data.category,
 				privileges: data.privileges

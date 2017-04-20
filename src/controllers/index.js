@@ -16,6 +16,7 @@ var Controllers = {
 	categories: require('./categories'),
 	zteindex: require('./zteindex'),
 	category: require('./category'),
+	project: require('./project'),
 	unread: require('./unread'),
 	recent: require('./recent'),
 	popular: require('./popular'),

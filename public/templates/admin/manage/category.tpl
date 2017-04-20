@@ -54,6 +54,18 @@
 							</div><br />
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
+									<label for="cid-{category.cid}-tpl">
+										[[admin/manage/categories:tpl]]
+									</label>
+									<select id="cid-{category.cid}-tpl" class="form-control" data-name="tpl" data-value="{category.tpl}">
+										<option value="0">default</option>
+										<option value="1">project</option>
+										<option value="2">sub-project</option>
+									</select>
+								</div>
+							</div>
+							<div class="col-sm-4 col-xs-12">
+								<div class="form-group">
 									<label for="cid-{category.cid}-class">
 										[[admin/manage/categories:custom-class]]
 									</label>
@@ -67,7 +79,7 @@
 									</label>
 									<input id="cid-{category.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{category.numRecentReplies}" />
 								</div>
-							</div>
+							</div><br />
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
 									<label for="cid-{category.cid}-link">

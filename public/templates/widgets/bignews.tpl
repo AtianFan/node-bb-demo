@@ -1,8 +1,8 @@
 <div class="widget-bignews">
-	<ul id="bignews_img" class="col-lg-6 col-sm-12">
+	<ul id="bignews_img" class="col-lg-5 col-sm-12">
 		<!-- BEGIN bignewsData -->
 		<li>
-			{bignewsData.firstImg}
+			<a href="{relative_path}/topic/{bignewsData.topic.slug}" target="_blank">{bignewsData.firstImg}</a>
 		</li>
 		<!-- END bignewsData -->
 	</ul>
@@ -36,10 +36,10 @@ $(document).ready(function() {
 		html.find('span.timeago').timeago();
 	}
 
-	imgSlick.on('beforeChange', function(event, slick, direction, nextSlide){
-		liSlick.removeClass('current');
-		liSlick.eq(nextSlide).addClass('current');
-	});
+	// imgSlick.on('beforeChange', function(event, slick, direction, nextSlide){
+	// 	liSlick.removeClass('current');
+	// 	liSlick.eq(nextSlide).addClass('current');
+	// });
 
 	imgSlick.on('init', function(event, slick, direction){
 		topics.find('li:first').addClass('current');
@@ -51,6 +51,7 @@ $(document).ready(function() {
 		dots: true,
 		arrows: false,
 		focusOnSelect: true
+		// autoplay: true,
 	});
 
 });

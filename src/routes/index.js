@@ -71,6 +71,8 @@ function categoryRoutes(app, middleware, controllers) {
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.category.get);
 	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.category.get);
+	setupPageRoute(app, '/project/:project/:slug/:topic_index', middleware, [], controllers.project.get);
+	setupPageRoute(app, '/project/:project/:slug?', middleware, [], controllers.project.get);
 }
 
 function userRoutes(app, middleware, controllers) {

@@ -16,6 +16,19 @@ module.exports = function (Categories) {
 
 		async.waterfall([
 			function (next) {
+				db.getObjectField('category:' + parentCid, 'tpl', next);//获取父目录的tpl类型
+			},
+			function (tpl, next) {
+				tpl = parseInt(tpl);
+
+				if(tpl == 1){
+					data.tpl = 2;
+				}else if(tpl == 2){
+					data.tpl = 2;
+				}else{
+					data.tpl = 0;
+				}
+
 				db.incrObjectField('global', 'nextCid', next);
 			},
 			function (cid, next) {
@@ -41,7 +54,8 @@ module.exports = function (Categories) {
 					link: '',
 					numRecentReplies: 1,
 					class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
-					imageClass: 'cover'
+					imageClass: 'cover',
+					tpl: data.tpl
 				};
 
 				plugins.fireHook('filter:category.create', {category: category, data: data}, next);

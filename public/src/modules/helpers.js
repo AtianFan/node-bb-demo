@@ -110,7 +110,8 @@
 			if (!child) {
 				return;
 			}
-			var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
+			var pathName = category.parentCid == '3' ? '/project/' : '/category/';
+			var link = child.link ? child.link : (relative_path + pathName + child.slug);
 			html += '<a href="' + link + '">' +
 					'<span class="fa-stack fa-lg">' +
 					'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +

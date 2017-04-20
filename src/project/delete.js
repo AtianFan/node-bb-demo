@@ -3,14 +3,10 @@
 var async = require('async');
 var db = require('../database');
 var batch = require('../batch');
-var plugins = require('../plugins');
-var topics = require('../topics');
-var groups = require('../groups');
-var privileges = require('../privileges');
 
-module.exports = function (Categories) {
+module.exports = function (Project) {
 
-	Categories.purge = function (cid, uid, callback) {
+	Project.purge = function (proid, uid, callback) {
 		async.waterfall([
 			function (next) {
 				batch.processSortedSet('cid:' + cid + ':tids', function (tids, next) {
@@ -26,9 +22,6 @@ module.exports = function (Categories) {
 				async.eachLimit(pinnedTids, 10, function (tid, next) {
 					topics.purgePostsAndTopic(tid, uid, next);
 				}, next);
-			},
-			function (next) {
-				purgeCategory(cid, next);
 			},
 			function (next) {
 				purgeCategory(cid, next);
@@ -58,8 +51,7 @@ module.exports = function (Categories) {
 					'cid:' + cid + ':ignorers',
 					'cid:' + cid + ':children',
 					'cid:' + cid + ':tag:whitelist',
-					'category:' + cid,
-					'project:' + cid
+					'category:' + cid
 				], next);
 			},
 			function (next) {

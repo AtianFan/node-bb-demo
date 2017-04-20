@@ -8,15 +8,16 @@ var db = require('../database');
 var privileges = require('../privileges');
 var user = require('../user');
 var categories = require('../categories');
+var project = require('../project');
 var meta = require('../meta');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../../public/src/utils');
 
-var categoryController = {};
+var projectController = {};
 
-categoryController.get = function (req, res, callback) {
-	var cid = req.params.category_id;
+projectController.get = function (req, res, callback) {
+	var cid = req.params.project;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
 	var userPrivileges;
@@ -216,32 +217,33 @@ categoryController.get = function (req, res, callback) {
 			res.locals.linkTags.push(rel);
 		});
 
-		switch(categoryData.tpl){
-			case '0':
-				categoryData.tplName = 'category';
-				break;
-			case '1':
-				categoryData.tplName = 'zte-category';
-				if(categoryData.cid == '3'){
-					categoryData.isProjectCommu = true;
-				}
-				break;
-			case '2':
-				categoryData.tplName = 'zte-category-list';
-				break;
-		}
+		async.waterfall([
+			function (next) {
+				project.getProjectData(categoryData.cid,next);
+			}
+		],  function (err, projectData) {
+			var data = {
+				category: categoryData,
+				project: projectData
+			};
+			var tplName = '';
 
-		// if(categoryData.parentCid == '0' && categoryData.tpl > 0){
-		// 	categoryData.tplName = 'zte-category';
-		// }else if(categoryData.parentCid != '0' && categoryData.tpl > 0){
-			
-		// }else{
-		// 	categoryData.tplName = 'category';
-		// }
+			switch(categoryData.tpl){
+				case '1':
+					tplName = 'zte-project';
+					break;
+				case '2':
+					tplName = 'zte-subproject';
+					break;
+			}
 
-		res.render(categoryData.tplName, categoryData);
+
+			res.render(tplName, data);
+		})
+
+		
 	});
 };
 
 
-module.exports = categoryController;
+module.exports = projectController;

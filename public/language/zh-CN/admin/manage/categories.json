@@ -7,6 +7,7 @@
 	"bg-color": "背景颜色",
 	"text-color": "文字颜色",
 	"bg-image-size": "背景图片大小",
+	"tpl": "板块渲染模板",
 	"custom-class": "自定义分类",
 	"num-recent-replies": "最近回复数",
 	"ext-link": "外部链接",
