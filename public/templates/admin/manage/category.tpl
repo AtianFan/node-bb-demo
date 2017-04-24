@@ -61,6 +61,7 @@
 										<option value="0">default</option>
 										<option value="1">project</option>
 										<option value="2">sub-project</option>
+										<option value="3">third-project</option>
 									</select>
 								</div>
 							</div>

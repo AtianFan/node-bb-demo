@@ -142,6 +142,9 @@ categoryController.get = function (req, res, callback) {
 				if (err) {
 					return next(err);
 				}
+				if(categoryData.tpl == '3'){
+					crumbs[crumbs.length - 1].url = undefined;
+				}
 				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
 				next(null, categoryData);
 			});
@@ -226,7 +229,7 @@ categoryController.get = function (req, res, callback) {
 					categoryData.isProjectCommu = true;
 				}
 				break;
-			case '2':
+			default:
 				categoryData.tplName = 'zte-category-list';
 				break;
 		}

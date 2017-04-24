@@ -136,13 +136,18 @@ projectController.get = function (req, res, callback) {
 			var breadcrumbs = [
 				{
 					text: categoryData.name,
-					url: nconf.get('relative_path') + '/category/' + categoryData.slug
+					url: nconf.get('relative_path') + '/' + (categoryData.tpl == '3' ? 'project' : 'category') + '/' + categoryData.slug
 				}
 			];
 			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, function (err, crumbs) {
 				if (err) {
 					return next(err);
 				}
+
+				if(categoryData.tpl == '3'){
+					crumbs[crumbs.length-1].url = crumbs[crumbs.length-1].url.replace('category', 'project');
+				}
+
 				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
 				next(null, categoryData);
 			});
@@ -222,23 +227,21 @@ projectController.get = function (req, res, callback) {
 				project.getProjectData(categoryData.cid,next);
 			}
 		],  function (err, projectData) {
-			var data = {
-				category: categoryData,
-				project: projectData
-			};
+			categoryData.project = projectData;
+			
 			var tplName = '';
 
 			switch(categoryData.tpl){
-				case '1':
+				case '2':
 					tplName = 'zte-project';
 					break;
-				case '2':
+				case '3':
 					tplName = 'zte-subproject';
 					break;
 			}
 
 
-			res.render(tplName, data);
+			res.render(tplName, categoryData);
 		})
 
 		

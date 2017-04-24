@@ -6,6 +6,7 @@ var db = require('../database');
 var groups = require('../groups');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
+var project = require('../project');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Categories) {
@@ -24,7 +25,7 @@ module.exports = function (Categories) {
 				if(tpl == 1){
 					data.tpl = 2;
 				}else if(tpl == 2){
-					data.tpl = 2;
+					data.tpl = 3;
 				}else{
 					data.tpl = 0;
 				}
@@ -32,13 +33,17 @@ module.exports = function (Categories) {
 				db.incrObjectField('global', 'nextCid', next);
 			},
 			function (cid, next) {
-				data.name = data.name || 'Category ' + cid;
-				var slug = cid + '/' + utils.slugify(data.name);
-				var order = data.order || cid;	// If no order provided, place it at the end
+				data.cid = cid;
+				db.getObjectField('category:' + parentCid, 'isProjectCommu', next)
+			},
+			function (isProjectCommu, next) {
+				data.name = data.name || 'Category ' + data.cid;
+				var slug = data.cid + '/' + utils.slugify(data.name);
+				var order = data.order || data.cid;	// If no order provided, place it at the end
 				var colours = Categories.assignColours();
 
 				category = {
-					cid: cid,
+					cid: data.cid,
 					name: data.name,
 					description: data.description ? data.description : '',
 					descriptionParsed: data.descriptionParsed ? data.descriptionParsed : '',
@@ -55,7 +60,8 @@ module.exports = function (Categories) {
 					numRecentReplies: 1,
 					class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
 					imageClass: 'cover',
-					tpl: data.tpl
+					tpl: data.tpl,
+					isProjectCommu: isProjectCommu || (parentCid == '3') ? true : undefined
 				};
 
 				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
@@ -89,6 +95,13 @@ module.exports = function (Categories) {
 			function (category, next) {
 				plugins.fireHook('action:category.create', category);
 				next(null, category);
+			},
+			function (category, next) {
+				if(category.isProjectCommu){
+					project.create(category, next);
+				}else{
+					next(null, category);
+				}
 			}
 		], callback);
 	};

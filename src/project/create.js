@@ -10,37 +10,36 @@ var utils = require('../../public/src/utils');
 
 module.exports = function (Project) {
 
-	Project.create = function (data, callback) {
+	Project.create = function (category, callback) {
 		var project;
-		var parentCid = data.parentCid ? data.parentCid : 0;
+		var parentCid = category.parentCid ? category.parentCid : 0;
 
 		async.waterfall([
 			function (next) {
 				db.getObjectField('global', 'nextCid', next);
 			},
 			function (proid, next) {
-				data.name = data.name || 'Project ' + proid;
-				var slug = proid + '/' + utils.slugify(data.name);
-				var order = data.order || proid;	// If no order provided, place it at the end
+				category.name = category.name || 'Project ' + proid;
+				var slug = proid + '/' + utils.slugify(category.name);
+				var order = category.order || proid;	// If no order provided, place it at the end
 				// var colours = Categories.assignColours();
 
 				project = {
 					proid: proid,
-					name: data.name,
-					description: data.description ? data.description : '',
+					name: category.name,
+					description: category.description ? category.description : '',
 					slug: slug,
 					parentCid: parentCid,
-					codePublishCount: Math.floor(Math.random()),
-					tpl: data.tpl
+					codePublishCount: Math.floor(Math.random()*100),
+					tpl: category.tpl
 				};
 
-				plugins.fireHook('filter:project.create', {project: project, data: data}, next);
+				plugins.fireHook('filter:project.create', project, next);
 			},
-			function (data, next) {
-				project = data.project;
+			function (project, next) {
 
 				async.series([
-					async.apply(db.setObject, 'project:' + project.procid, project)
+					async.apply(db.setObject, 'project:' + project.proid, project)
 					// async.apply(db.sortedSetAdd, 'proid:' + parentCid + ':children', project.order, project.cid),
 				], next);
 			},
@@ -50,9 +49,9 @@ module.exports = function (Project) {
 				// }
 				next(null, project);
 			},
-			function (category, next) {
+			function (project, next) {
 				plugins.fireHook('action:project.create', project);
-				next(null, project);
+				next(null, {project: project, category: category, cid: category.cid});
 			}
 		], callback);
 	};
