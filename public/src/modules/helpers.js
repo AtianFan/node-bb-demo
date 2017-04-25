@@ -122,6 +122,38 @@
 		return html;
 	};
 
+	helpers.generateProjectChildrenCategories = function (category) {
+		var html = '';
+		var relative_path = (typeof config !== 'undefined' ? config.relative_path : require('nconf').get('relative_path'));
+		if (!category || !category.children) {
+			return html;
+		}
+		category.children.forEach(function (child) {
+			if (!child) {
+				return;
+			}
+			var pathName = category.parentCid == '3' ? '/project/' : '/category/';
+			var link = child.link ? child.link : (relative_path + pathName + child.slug);
+			if(child.backgroundImage){
+				html += '<a href="' + link + '" style="display: inherit;margin-bottom: 15px;">' +
+						'<span class="icon" style="background-image:url(' + child.backgroundImage +')">' +
+						'</span></a><small>' + child.name + '</small> ';
+			}else{
+				html += '<a href="' + link + '">' +
+						'<span class="fa-stack fa-lg">' +
+						'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
+						'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
+						'</span></a><small>' + child.name + '</small> ';
+			}
+			html += '<span class="small-tag" title="[[category:totalTopicCount]]">' + 
+					'<i class="fa fa-tag"></i>' + category.totalTopicCount + '</span>' +
+					'<span class="small-tag" title="[[category:totalPostCount]]">' +
+					'<i class="fa fa-file-text-o"></i>' + category.totalPostCount + '</span>'
+		});
+		html = html ? ('<div class="category-children">' + html + '</div>') : html;
+		return html;
+	};
+
 	helpers.generateTopicClass = function (topic) {
 		var style = [];
 
