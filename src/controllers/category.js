@@ -12,6 +12,8 @@ var meta = require('../meta');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../../public/src/utils');
+var topics = require('../topics');
+var _ = require('underscore');
 
 var categoryController = {};
 
@@ -158,6 +160,33 @@ categoryController.get = function (req, res, callback) {
 			categories.getRecentTopicReplies(allCategories, req.uid, function (err) {
 				next(err, categoryData);
 			});
+		},
+		function (categoryData, next) {
+			topics.getTags(0, 8 - 1, function(err, tags) {
+				if (err) {
+					return callback(err);
+				}
+
+				categoryData.tags = tags;
+				categoryData.relative_path = nconf.get('relative_path');
+				
+				next(null, categoryData);
+			});
+		},
+		function (categoryData, next) {
+			categories.getAllCategories(1, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+
+				categoryData.recommendCategorys = _.sortBy(data, function(data) { return - data.totalTopicCount;});
+				categoryData.recommendCategorys = _.filter(categoryData.recommendCategorys, function(data) {
+					return data.parentCid != '0' && data.parentCid != '2';
+				});
+				categoryData.recommendCategorys.splice(6,categoryData.recommendCategorys.length-6);
+
+				next(null, categoryData);
+			})
 		}
 	], function (err, categoryData) {
 		if (err) {
