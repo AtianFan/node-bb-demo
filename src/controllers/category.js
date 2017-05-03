@@ -248,21 +248,21 @@ categoryController.get = function (req, res, callback) {
 			res.locals.linkTags.push(rel);
 		});
 
-		// switch(categoryData.tpl){
-		// 	case '0':
-		// 		categoryData.tplName = 'category';
-		// 		break;
-		// 	case '1':
-		// 		categoryData.tplName = 'zte-category';
-		// 		if(categoryData.cid == '3'){
-		// 			categoryData.isProjectCommu = true;
-		// 		}
-		// 		break;
-		// 	default:
-		// 		categoryData.tplName = 'zte-category-list';
-		// 		break;
-		// }
-categoryData.tplName = 'category';
+		switch(categoryData.tpl){
+			case '0':
+				categoryData.tplName = 'category';
+				break;
+			case '1':
+				categoryData.tplName = 'zte-category';
+				if(categoryData.cid == '3'){
+					categoryData.isProjectCommu = true;
+				}
+				break;
+			default:
+				categoryData.tplName = 'zte-category-list';
+				break;
+		}
+
 		// if(categoryData.parentCid == '0' && categoryData.tpl > 0){
 		// 	categoryData.tplName = 'zte-category';
 		// }else if(categoryData.parentCid != '0' && categoryData.tpl > 0){
