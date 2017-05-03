@@ -134,6 +134,8 @@
 			}
 			var pathName = category.parentCid == '3' ? '/project/' : '/category/';
 			var link = child.link ? child.link : (relative_path + pathName + child.slug);
+			html += '<div class="category-children">';
+
 			if(child.backgroundImage){
 				html += '<a href="' + link + '" style="display: inherit;margin-bottom: 15px;">' +
 						'<span class="icon" style="background-image:url(' + child.backgroundImage +')">' +
@@ -148,9 +150,9 @@
 			html += '<span class="small-tag" title="[[category:totalTopicCount]]">' + 
 					'<i class="fa fa-tag"></i>' + category.totalTopicCount + '</span>' +
 					'<span class="small-tag" title="[[category:totalPostCount]]">' +
-					'<i class="fa fa-file-text-o"></i>' + category.totalPostCount + '</span>'
+					'<i class="fa fa-file-text-o"></i>' + category.totalPostCount + '</span></div>'
 		});
-		html = html ? ('<div class="category-children">' + html + '</div>') : html;
+		// html = html ? ('<div class="category-children">' + html + '</div>') : html;
 		return html;
 	};
 
