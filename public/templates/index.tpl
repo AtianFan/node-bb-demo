@@ -15,8 +15,8 @@
 	<!-- END breadcrumbs -->
 </ol>
 <!-- ENDIF breadcrumbs.length -->
-<div class="row">
-	<div class="col-lg-12 col-sm-12" has-widget-class="col-lg-9 col-sm-12" has-widget-target="sidebar">
+<div class="row zte-index">
+	<div class="col-lg-12 col-sm-12 zte-index-left" has-widget-class="col-lg-9 col-sm-12" has-widget-target="sidebar">
 		<div class="col-lg-12 col-sm-12" widget-area="header"></div>
 		<div class="col-lg-12 col-sm-12" has-widget-target="sidebar">
 			<div class="col-lg-6 col-sm-12" widget-area="bodyLeft">123</div>
