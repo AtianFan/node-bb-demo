@@ -5,6 +5,7 @@ var nconf = require('nconf');
 var path = require('path');
 var winston = require('winston');
 var jimp = require('jimp');
+var sizeOf = require('image-size');
 
 var utils = require('../public/src/utils');
 
@@ -26,10 +27,15 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 
 	var is = fs.createReadStream(tempPath);
 	var os = fs.createWriteStream(uploadPath);
-	is.on('end', function () {
+	var fileData = {};
+
+	is.on('end', function (data) {
+		var dimensions = sizeOf(uploadPath);
+		
 		callback(null, {
 			url: nconf.get('upload_url') + '/' + folder + '/' + filename,
-			path: uploadPath
+			path: uploadPath,
+			dimensions: dimensions
 		});
 	});
 

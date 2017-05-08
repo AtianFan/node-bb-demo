@@ -223,7 +223,8 @@ function saveFileToLocal(uploadedFile, callback) {
 		callback(null, {
 			url: nconf.get('relative_path') + upload.url,
 			path: upload.path,
-			name: uploadedFile.name
+			name: uploadedFile.name,
+			dimensions: upload.dimensions
 		});
 	});
 }

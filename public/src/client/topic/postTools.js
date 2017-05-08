@@ -46,9 +46,6 @@ define('forum/topic/postTools', [
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
-				data.posts.display_bignews_tools = index === 0 ? true : false;
-				data.posts.revoke = !data.isBignews ? true : false;
-
 				templates.parse('partials/topic/post-menu-list', data, function (html) {
 					translator.translate(html, function (html) {
 						dropdownMenu.html(html);
@@ -128,32 +125,6 @@ define('forum/topic/postTools', [
 			});
 		});
 
-		postContainer.on('click', '[component="post/revoke"]', function () {
-			var btn = $(this);
-
-			var timestamp = parseInt(getData(btn, 'data-timestamp'), 10);
-			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
-			
-			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
-				translator.translate('[[topic:post_revoke_confirm]]', function (msg) {
-					bootbox.confirm(msg, function (confirm) {
-						if (!confirm) {
-							return;
-						}
-
-						socket.emit('topics.revoke', {
-							tids: [ajaxify.data.tid],
-							cid: ajaxify.data.cid
-						}, function (err) {
-							if (err) {
-								app.alertError(err.message);
-							}
-						});
-					});
-				});
-			}
-		});
-
 		postContainer.on('click', '[component="post/edit"]', function () {
 			var btn = $(this);
 
@@ -163,20 +134,6 @@ define('forum/topic/postTools', [
 			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
 				$(window).trigger('action:composer.post.edit', {
 					pid: getData(btn, 'data-pid')
-				});
-			}
-		});
-
-		postContainer.on('click', '[component="post/bignews"]', function () {
-			var btn = $(this);
-
-			var timestamp = parseInt(getData(btn, 'data-timestamp'), 10);
-			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
-			
-			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
-				$(window).trigger('action:composer.post.bignews', {
-					pid: getData(btn, 'data-pid'),
-					bignews: true
 				});
 			}
 		});

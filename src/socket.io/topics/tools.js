@@ -27,12 +27,16 @@ module.exports = function (SocketTopics) {
 					},
 					privileges: function (next) {
 						privileges.topics.get(data.tid, socket.uid, next);
+					},
+					isBignews: function (next) {
+						topics.isBignews(data.tid, next)
 					}
 				}, next);
 			},
 			function (results, next) {
 				topic = results.topic;
 				topic.privileges = results.privileges;
+				topic.isBignews = results.isBignews;
 				plugins.fireHook('filter:topic.thread_tools', {topic: results.topic, uid: socket.uid, tools: []}, next);
 			},
 			function (data, next) {

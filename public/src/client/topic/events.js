@@ -92,8 +92,8 @@ define('forum/topic/events', [
 
 	function onTopicRevoked(data) {
 		console.log('onTopicRevoked')
-		components.get('post/revoke').toggleClass('hidden');
-		components.get('post/bignews').toggleClass('hidden', data.bignews);
+		components.get('topic/revoke').parent().toggleClass('hidden');
+		components.get('topic/bignews').parent().toggleClass('hidden', data.bignews);
 		$('[component="post/header"] i.fa-trophy').toggleClass('hidden', !data.bignews);
 	}
 
@@ -119,8 +119,8 @@ define('forum/topic/events', [
 		var breadCrumb = components.get('breadcrumb/current');
 
 		if(data.topic.bignews){
-			var revokeEl = components.get('post/revoke');
-			var bignewsEl = components.get('post/bignews');
+			var revokeEl = components.get('topic/revoke').parent();
+			var bignewsEl = components.get('topic/bignews').parent();
 
 			bignewsEl.toggleClass('hidden');
 			revokeEl.toggleClass('hidden', false);

@@ -1,17 +1,5 @@
 <!-- IF posts.display_moderator_tools -->
 <li role="presentation" class="dropdown-header">[[topic:tools]]</li>
-<!-- IF posts.display_bignews_tools -->
-<li role="presentation">
-	<a component="post/bignews" role="menuitem" tabindex="-1" href="#" class="<!-- IF !posts.revoke -->hidden<!-- ENDIF !posts.revoke -->">
-		<span class="menu-icon"><i class="fa fa-pencil"></i></span> [[topic:bignews]]
-	</a>
-</li>
-<li role="presentation">
-	<a component="post/revoke" role="menuitem" tabindex="-1" href="#" class="<!-- IF posts.revoke -->hidden<!-- ENDIF posts.revoke -->">
-		<span class="menu-icon"><i class="fa fa-eraser"></i></span> [[topic:revoke]]
-	</a>
-</li>
-<!-- ENDIF posts.display_bignews_tools -->
 <li role="presentation">
 	<a component="post/edit" role="menuitem" tabindex="-1" href="#">
 		<span class="menu-icon"><i class="fa fa-pencil"></i></span> [[topic:edit]]

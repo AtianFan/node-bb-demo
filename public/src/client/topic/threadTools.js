@@ -63,6 +63,49 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		topicContainer.on('click', '[component="topic/bignews"]', function () {
+
+			var btn = $(this);
+			var dataEl = btn.parents('[data-pid]').length > 0 ? btn.parents("[data-pid]") : btn.parents('.post-bar').prev().children(':first');
+			var data = dataEl.attr('data-timestamp');
+			var timestamp = parseInt(data, 10);
+			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
+			
+			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
+				$(window).trigger('action:composer.post.bignews', {
+					pid: dataEl.attr('data-pid'),
+					bignews: true
+				});
+			}
+		});
+
+		topicContainer.on('click', '[component="topic/revoke"]', function () {
+			var btn = $(this);
+			var dataEl = btn.parents('[data-pid]').length > 0 ? btn.parents("[data-pid]") : btn.parents('.post-bar').prev().children(':first');
+			var data = dataEl.attr('data-timestamp');
+			var timestamp = parseInt(data, 10);
+			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
+			
+			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
+				translator.translate('[[topic:post_revoke_confirm]]', function (msg) {
+					bootbox.confirm(msg, function (confirm) {
+						if (!confirm) {
+							return;
+						}
+
+						socket.emit('topics.revoke', {
+							tids: [ajaxify.data.tid],
+							cid: ajaxify.data.cid
+						}, function (err) {
+							if (err) {
+								app.alertError(err.message);
+							}
+						});
+					});
+				});
+			}
+		});
+
 		topicContainer.on('click', '[component="topic/mark-unread-for-all"]', function () {
 			var btn = $(this);
 			socket.emit('topics.markAsUnreadForAll', [tid], function (err) {
@@ -136,9 +179,16 @@ define('forum/topic/threadTools', [
 				return;
 			}
 
+			var postEl = $this.parents('[data-pid]');
+			
+
 			socket.emit('topics.loadTopicTools', {tid: ajaxify.data.tid, cid: ajaxify.data.cid}, function (err, data) {
 				if (err) {
 					return app.alertError(err);
+				}
+
+				if(postEl.length > 0){
+					data.revoke = !data.isBignews ? true : false;
 				}
 
 				templates.parse('partials/topic/topic-menu-list', data, function (html) {
@@ -149,6 +199,38 @@ define('forum/topic/threadTools', [
 				});
 			});
 		});
+	}
+
+	function checkDuration(duration, postTimestamp, languageKey) {
+		if (!ajaxify.data.privileges.isAdminOrMod && duration && Date.now() - postTimestamp > duration * 1000) {
+			var numDays = Math.floor(duration / 86400);
+			var numHours = Math.floor((duration % 86400) / 3600);
+			var numMinutes = Math.floor(((duration % 86400) % 3600) / 60);
+			var numSeconds = ((duration % 86400) % 3600) % 60;
+			var msg = '[[error:' + languageKey + ', ' + duration + ']]';
+			if (numDays) {
+				if (numHours) {
+					msg = '[[error:' + languageKey + '-days-hours, ' + numDays + ', ' + numHours + ']]';
+				} else {
+					msg = '[[error:' + languageKey + '-days, ' + numDays + ']]';
+				}
+			} else if (numHours) {
+				if (numMinutes) {
+					msg = '[[error:' + languageKey + '-hours-minutes, ' + numHours + ', ' + numMinutes + ']]';
+				} else {
+					msg = '[[error:' + languageKey + '-hours, ' + numHours + ']]';
+				}
+			} else if (numMinutes) {
+				if (numSeconds) {
+					msg = '[[error:' + languageKey + '-minutes-seconds, ' + numMinutes + ', ' + numSeconds + ']]';
+				} else {
+					msg = '[[error:' + languageKey + '-minutes, ' + numMinutes + ']]';
+				}
+			}
+			app.alertError(msg);
+			return false;
+		}
+		return true;
 	}
 
 	function topicCommand(command, tid) {

@@ -7,6 +7,10 @@
 <li class="divider"></li>
 <li><a component="topic/move" href="#"><i class="fa fa-fw fa-arrows"></i> [[topic:thread_tools.move]]</a></li>
 <li><a component="topic/fork" href="#"><i class="fa fa-fw fa-code-fork"></i> [[topic:thread_tools.fork]]</a></li>
+<!-- IF privileges.isAdminOrMod -->
+<li class="<!-- IF !revoke -->hidden<!-- ENDIF !revoke -->"><a component="topic/bignews" href="#"><i class="fa fa-fw fa-pencil"></i> [[topic:thread_tools.bignews]]</a></li>
+<li class="<!-- IF revoke -->hidden<!-- ENDIF revoke -->"><a component="topic/revoke" href="#"><i class="fa fa-fw fa-pencil"></i> [[topic:thread_tools.revoke]]</a></li>
+<!-- ENDIF privileges.isAdminOrMod -->
 <li class="divider"></li>
 <!-- ENDIF privileges.editable -->
 
