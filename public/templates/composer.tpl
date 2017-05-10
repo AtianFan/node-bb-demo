@@ -111,6 +111,10 @@
 			</div>
 		</div>
 
+		<!-- IF bignews -->
+		<div class="warn-text"><i class="fa fa-warning"></i> 提示：图片最佳比例为[19:13],否则将变形展示</div>
+		<!-- ENDIF bignews -->
+
 		<div class="row write-preview-container">
 			<div class="write-container">
 				<div class="help-text">
