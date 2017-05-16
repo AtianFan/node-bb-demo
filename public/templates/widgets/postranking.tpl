@@ -1,6 +1,6 @@
 <div class="widget-cont">
 	<div class="widget-title">
-		<span>每周排行</span>
+		<span>{title}</span>
 	</div>
 	<div class="post-ranking clearfix">
 		<ul>
