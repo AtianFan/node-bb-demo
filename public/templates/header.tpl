@@ -22,6 +22,8 @@
 			user: JSON.parse('{{userJSON}}')
 		};
 	</script>
+	
+	<script src="{relative_path}/vendor/echarts3.0/echarts.js?{config.cache-buster}"></script>
 
 	<script src="{relative_path}/nodebb.min.js?{config.cache-buster}"></script>
 

@@ -94,6 +94,9 @@
 							<label for="tag-whitelist">Tag Whitelist</label><br />
 							<input id="tag-whitelist" type="text" class="form-control" placeholder="Enter category tags here" data-name="tagWhitelist" value="" />
 						</fieldset>
+						<fieldset>
+						<textarea class="write" style="padding: 20px;width: 100%;border: 1px solid #ddd;height: 400px;margin-top: 20px;" id="cid-{category.cid}-readme" data-name="readme" tabindex="4" data-mentions="1"></textarea>
+						</fieldset>
 					</div>
 				</div>
 

@@ -33,8 +33,120 @@
 	  		<i class="fa fa-upload"></i>提交代码：49
 	  	</div>
 	</div>
-	<div class="project-body">
-	  <img src="../../images/subproject.png">
+	<div class="project-body hidden">
+		<div class="content">
+		{content}
+		</div>
+		<div class="contribute">
+			<div class="contribute-head">
+				<h3>开发者贡献</h3>
+			</div>
+			<span class="commits on" id="commits">代码提交次数</span>
+			<span class="rows" id="rows">代码提交行数</span>
+			<div id="commits-echarts" class="contribute-div">
+			</div>
+			<div id="rows-echarts" style="width:500px" class="contribute-div hidden">
+			</div>
+	    </div>
+	    <div class="activity-level">
+	    	<h3>开发者贡献</h3>
+	    	<p>Commit statistics for master Sep 22- Mar 31</p>
+	    	<ul>
+	    		<li>2000 commits during 556 days</li>
+	    		<li>Average 3 commits per day</li>
+	    		<li>Contributed by 24 authors</li>
+	    	</ul>
+	    	<div id="act-echarts" class="act-echarts">
+	    	</div>
+	    </div>
+	</div>
+	<div class="project-right">
+		<h4>项目管理工具</h4>
+		<div class="pro-item">
+			<div class='sub-tit'><i class="fa fa-qrcode"></i>代码托管</div>
+			<span class="pro-txt">Files</span><span class='pro-data'>100.00mb</span>
+			<span class="pro-txt">Commits</span><span class='pro-data'>4323</span>
+			<span class="pro-txt">Branches</span><span class='pro-data'>11</span>
+			<span class="pro-txt">Tags</span><span class='pro-data'>11</span>
+		</div>
+		<div class="pro-item">
+			<div class='sub-tit'><i class="fa fa-tasks"></i>任务</div>
+			<span class="pro-txt">Open</span><span class='pro-data'>49</span>
+			<span class="pro-txt">Closed</span><span class='pro-data'>23</span>
+			<span class="pro-txt">All</span><span class='pro-data'>412</span>
+		</div>
+		<div class="pro-item">
+			<div class='sub-tit'><i class="fa fa-flag"></i>里程碑</div>
+			<span class="pro-txt">Open</span><span class='pro-data'>49</span>
+			<span class="pro-txt">Closed</span><span class='pro-data'>23</span>
+			<span class="pro-txt">All</span><span class='pro-data'>412</span>
+		</div>
+		<div class="pro-item">
+			<div class='sub-tit'><i class="fa fa-object-group"></i>知识库<span class='pro-data'>24</span></div>
+			<span class="cl6">Last edit by</span> <span class="cl3">wu.yangjin</span>
+			<div class="pro-time cl9">3 week ago</div>
+		</div>
+		<div class="pro-item">
+			<div class='sub-tit'><i class="fa fa-object-group"></i>站点演示</div>
+			<span class="cl3">http://gitlab.ztesoft.com/fish-show/</span>
+		</div>
+		<div class="pro-item">
+			<div class='sub-tit'><i class="fa fa-object-group"></i>项目论坛</div>
+			<div>
+			<span class="pro-txt">主题</span><span class='pro-data'>2</span>
+			<span class="pro-txt">帖子</span><span class='pro-data'>2</span>
+			</div>
+			<div>
+				<div class="mb7">
+					<a href="/category/45/ngweb" style="width: 2.2em;margin-right: 2px;display: inline-block;height: 1.6em;">
+						<span class="icon" style="background-image:url('/uploads/category/category-45.jpg')">
+						</span>
+					</a> Huang.xinhui
+				</div>
+				<div>阿里云开源离线同步工具DataX3.0介绍</div>
+				<div class="pro-time cl9">3 week ago</div>
+				<!-- <a href="/category/25/project2">
+					<span class="fa-stack fa-lg">
+						<i style="color:#A1B56C;" class="fa fa-circle fa-stack-2x"></i>
+						<i style="color:#fff;" class="fa fa-stack-1x  fa-comments"></i>
+					</span>
+				</a> -->
+			</div>
+		</div>
+		<h4>项目成员</h4>
+		<div class="pro-item">
+			<a href="/category/25/project2">
+				<span class="fa-stack fa-lg">
+					<i style="color:#A1B56C;" class="fa fa-circle fa-stack-2x"></i>
+					<i style="color:#fff;" class="fa fa-stack-1x  fa-comments"></i>
+				</span>
+			</a>
+			<a href="/category/25/project2">
+				<span class="fa-stack fa-lg">
+					<i style="color:#A1B56C;" class="fa fa-circle fa-stack-2x"></i>
+					<i style="color:#fff;" class="fa fa-stack-1x  fa-comments"></i>
+				</span>
+			</a>
+			<a href="/category/25/project2">
+				<span class="fa-stack fa-lg">
+					<i style="color:#A1B56C;" class="fa fa-circle fa-stack-2x"></i>
+					<i style="color:#fff;" class="fa fa-stack-1x  fa-comments"></i>
+				</span>
+			</a>
+		</div>
+		<h4>关联项目</h4>
+		<div class="pro-item">
+			<div class="pro-group">
+				<a href="/category/25/project2">
+					<span class="fa-stack fa-lg">
+						<i style="color:#A1B56C;" class="fa fa-circle fa-stack-2x"></i>
+						<i style="color:#fff;" class="fa fa-stack-1x  fa-comments"></i>
+					</span>
+				</a>
+				<span>Fish-cli</span>
+				<span>Fish-cli 一句话简介</span>
+			</div>
+		</div>
 	</div>
 </div>
 <div widget-area="sidebar" class="col-lg-3 col-sm-12 hidden"></div>

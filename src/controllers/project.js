@@ -9,10 +9,18 @@ var privileges = require('../privileges');
 var user = require('../user');
 var categories = require('../categories');
 var project = require('../project');
+// var gitlab = require('../gitlab');
 var meta = require('../meta');
+var plugins = require('../plugins');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../../public/src/utils');
+var translator = require('../../public/src/modules/translator');
+var gitlab = require('gitlab')({
+  url:   'http://gitlab.ztesoft.com',
+  token: 'dn1c5DsVQcLy3xcJQ44k'
+});
+
 
 var projectController = {};
 
@@ -223,8 +231,40 @@ projectController.get = function (req, res, callback) {
 		});
 
 		async.waterfall([
+			// function (next) {
+			// 	// gitlab.getProjectData(1, next)
+			// 	// Listing projects
+			// 	gitlab.projects.all(function(projects) {
+			// 		console.log(projects.length);
+			// 		next(projects);
+			// 		// for (var i = 0; i < projects.length; i++) {
+			// 		// 	console.log("#" + projects[i].id + ": " + projects[i].name + ", path: " + projects[i].path + ", default_branch: " + projects[i].default_branch + ", private: " + projects[i]["private"] + ", owner: " + projects[i].owner.name + " (" + projects[i].owner.email + "), date: " + projects[i].created_at);
+			// 		// }
+			// 	});
+			// },
 			function (next) {
 				project.getProjectData(categoryData.cid,next);
+			},
+			function (projectData, next) {
+
+				if(categoryData.readme){
+					var tempData = {
+						content : categoryData.readme
+					}
+
+					plugins.fireHook('filter:parse.post', {postData: tempData}, function (err, data) {
+						if (err) {
+							return callback(err);
+						}
+
+						categoryData.content = translator.escape(data.postData.content);
+
+						next(null, projectData);
+					});
+				}else{
+					next(null, projectData);
+				}
+
 			}
 		],  function (err, projectData) {
 			categoryData.project = projectData;
