@@ -9,7 +9,8 @@ var privileges = require('../privileges');
 var user = require('../user');
 var categories = require('../categories');
 var project = require('../project');
-// var gitlab = require('../gitlab');
+var http = require('http');
+var url = require('url');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var pagination = require('../pagination');
@@ -231,18 +232,36 @@ projectController.get = function (req, res, callback) {
 		});
 
 		async.waterfall([
-			// function (next) {
-			// 	// gitlab.getProjectData(1, next)
-			// 	// Listing projects
-			// 	gitlab.projects.all(function(projects) {
-			// 		console.log(projects.length);
-			// 		next(projects);
-			// 		// for (var i = 0; i < projects.length; i++) {
-			// 		// 	console.log("#" + projects[i].id + ": " + projects[i].name + ", path: " + projects[i].path + ", default_branch: " + projects[i].default_branch + ", private: " + projects[i]["private"] + ", owner: " + projects[i].owner.name + " (" + projects[i].owner.email + "), date: " + projects[i].created_at);
-			// 		// }
-			// 	});
-			// },
 			function (next) {
+				db.getSortedSetRange('cid:' + categoryData.parentCid + ':children', 0, -1, function (err, cids) {
+					if (err) {
+						return callback(err);
+					}
+
+					next(null, cids);
+				});
+			},
+			function (cids, next) {
+				categories.getCategoriesFields(cids, ['name','slug','cid','readme','backgroundImage','link','bgColor','color'], function(err, relatCates){
+					if (err) {
+						return callback(err);
+					}
+					next(null, relatCates);
+
+				})
+			},
+			function (relatCates,next) {
+				var selfIndex = 0;
+				relatCates.forEach(function(item,index){
+					if(item.cid == categoryData.cid){
+						selfIndex = index;
+					}
+					if(item.readme){
+						item.readme = item.readme.slice(0,100);
+					}
+				})
+				relatCates.splice(selfIndex,1);
+				categoryData.relatCates = relatCates;
 				project.getProjectData(categoryData.cid,next);
 			},
 			function (projectData, next) {
@@ -274,14 +293,106 @@ projectController.get = function (req, res, callback) {
 			switch(categoryData.tpl){
 				case '2':
 					tplName = 'zte-project';
+					var childrenArr = [];
+
+					categoryData.children.forEach(function(item,index){
+						childrenArr.push(url.parse(item.gitlabLink).pathname.replace('.git',''));
+					})
+
+					var host = meta.config['serviceUrl'];
+
+					if(!categoryData.gitlabLink){
+						categoryData.gitlabLink = 'http://gitlab.ztesoft.com/ngweb';
+					}
+
+					var	project_path_name = url.parse(categoryData.gitlabLink).pathname;
+
+					var options = {  
+						hostname: url.parse(host).hostname, 
+						port: url.parse(host).port,
+						path: '/total?repo=' + project_path_name + '&children=' + childrenArr.toString(),
+						method: 'GET'  
+					};  
+
+					var gitlabData = '';
+
+					var req_g = http.request(options, function (res_g) {  
+						res_g.on('data', function (chunk) {  
+							gitlabData += chunk;  
+						}).on('end', function(){
+							categoryData.gitlabData = JSON.parse(gitlabData);
+							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
+
+							// var size = categoryData.gitlabData.repository.repository_size
+							// if (size < 1024) {
+							// 	categoryData.gitlabData.repository.repository_size = size + ' B';
+							// } else if (size < 1024 * 1024) {
+							// 	categoryData.gitlabData.repository.repository_size = (size / 1024).toFixed(2) + ' KB';
+							// } else {
+							// 	categoryData.gitlabData.repository.repository_size = (size / 1024 / 1024).toFixed(2) + ' MB';
+							// }
+
+							// categoryData.lastTopic = categoryData.topics[categoryData.topics.length - 1];
+
+							res.render(tplName, categoryData);
+						})  
+					});  
+					
+					req_g.on('error', function (e) {  
+						console.log('problem with request: ' + e.message);  
+					});  
+					
+					req_g.end(); 
 					break;
 				case '3':
 					tplName = 'zte-subproject';
+
+					var host = meta.config['serviceUrl'];
+
+					if(!categoryData.gitlabLink){
+						categoryData.gitlabLink = 'http://gitlab.ztesoft.com/fish/fish-desktop.git';
+					}
+					var	project_path_name = url.parse(categoryData.gitlabLink).pathname;
+
+					var options = {  
+						hostname: url.parse(host).hostname, 
+						port: url.parse(host).port,
+						path: '/stat?repo=' + project_path_name,
+						method: 'GET'  
+					};  
+
+					var gitlabData = '';
+
+					var req_g = http.request(options, function (res_g) {  
+						res_g.on('data', function (chunk) {  
+							gitlabData += chunk;  
+						}).on('end', function(){
+							categoryData.gitlabData = JSON.parse(gitlabData);
+							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
+
+							var size = categoryData.gitlabData.repository.repository_size
+							if (size < 1024) {
+								categoryData.gitlabData.repository.repository_size = size + ' B';
+							} else if (size < 1024 * 1024) {
+								categoryData.gitlabData.repository.repository_size = (size / 1024).toFixed(2) + ' KB';
+							} else {
+								categoryData.gitlabData.repository.repository_size = (size / 1024 / 1024).toFixed(2) + ' MB';
+							}
+
+							categoryData.lastTopic = categoryData.topics[categoryData.topics.length - 1];
+
+							res.render(tplName, categoryData);
+						})  
+					});  
+					
+					req_g.on('error', function (e) {  
+						console.log('problem with request: ' + e.message);  
+					});  
+					
+					req_g.end(); 
 					break;
 			}
 
-
-			res.render(tplName, categoryData);
 		})
 
 		

@@ -89,13 +89,21 @@
 									<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
 								</div>
 							</div>
+							<div class="col-sm-8 col-xs-12">
+								<div class="form-group">
+									<label for="cid-{category.cid}-gitlabLink">
+										gitlab链接
+									</label>
+									<input id="cid-{category.cid}-gitlabLink" type="text" class="form-control" placeholder="http://gitlab.ztesoft.com/..." data-name="gitlabLink" value="{category.gitlabLink}" />
+								</div>
+							</div>
 						</fieldset>
 						<fieldset>
 							<label for="tag-whitelist">Tag Whitelist</label><br />
 							<input id="tag-whitelist" type="text" class="form-control" placeholder="Enter category tags here" data-name="tagWhitelist" value="" />
 						</fieldset>
 						<fieldset>
-						<textarea class="write" style="padding: 20px;width: 100%;border: 1px solid #ddd;height: 400px;margin-top: 20px;" id="cid-{category.cid}-readme" data-name="readme" tabindex="4" data-mentions="1"></textarea>
+						<textarea class="write" id="readme" style="padding: 20px;width: 100%;border: 1px solid #ddd;height: 400px;margin-top: 20px;" id="cid-{category.cid}-readme" data-name="readme" data-value="{category.readme}" tabindex="4" data-mentions="1"></textarea>
 						</fieldset>
 					</div>
 				</div>

@@ -30,11 +30,75 @@
 		<!-- ENDIF name -->
 		<div class="title-opr">
 	    	<i class="fa fa-share-alt"></i>分享
-	  		<i class="fa fa-upload"></i>提交代码：49
+	  		<i class="fa fa-upload"></i>提交代码： <span id="commitsDevNum">0</span>人
 	  	</div>
 	</div>
-	<div class="project-body">
-	  <img src="../../images/project.png">
+	<div class="project-body hidden">
+		<div class="contribute-head">
+			<h3>介绍</h3>
+		</div>
+		<div class="content">
+		{content}
+		</div>
+		<div class="contribute-head">
+			<h3>项目</h3>
+		</div>
+		<div class="project-list">
+			<ul class="clearfix">
+				<!-- BEGIN children -->
+				<li>
+					<a href="{config.relative_path}/project/{children.slug}"><i class="fa fa-folder"></i> <span>{children.name}</span></a>
+				</li>
+				<!-- END children -->
+			</ul>
+		</div>
+		<div class="contribute">
+			<div class="contribute-head">
+				<h3>开发者贡献</h3>
+			</div>
+			<span class="commits on" id="commits-dev">代码提交次数</span>
+			<span class="rows" id="rows-dev">代码提交行数</span>
+			<div id="commits-dev-echarts" class="contribute-div">
+			</div>
+			<div id="rows-dev-echarts" style="width:500px" class="contribute-div hidden">
+			</div>
+	    </div>
+		<div class="contribute">
+			<div class="contribute-head">
+				<h3>项目贡献</h3>
+			</div>
+			<span class="commits on" id="commits-pro">代码提交次数</span>
+			<span class="rows" id="rows-pro">代码提交行数</span>
+			<div id="commits-pro-echarts" class="contribute-div">
+			</div>
+			<div id="rows-pro-echarts" style="width:500px" class="contribute-div hidden">
+			</div>
+	    </div>
+	</div>
+	<div class="project-right">
+		<h4>主要成员</h4>
+		<div class="pro-item noBr">
+			<div class="pro-group">
+				<!-- BEGIN gitlabData.projects -->
+				<div class="pro-single-div mb15">
+					<!-- IF gitlabData.projects.major.avatar_url -->
+					<a href="http://gitlab.ztesoft.com/{gitlabData.projects.major.user_name}" title="{gitlabData.project_member.user_name}" target="_blank">
+						<img src="http://gitlab.ztesoft.com/uploads/user/avatar/{gitlabData.projects.major.user_id}/{gitlabData.projects.major.avatar_url}">
+					</a>
+					<!-- ELSE -->
+					<a href="http://gitlab.ztesoft.com/{gitlabData.projects.major.user_name}" title="{gitlabData.projects.major.user_name}" target="_blank">
+						<span class="fa-stack fa-lg">
+							<i style="color:#A1B56C;" class="fa fa-circle fa-stack-2x"></i>
+							<i style="color:#fff;" class="fa fa-stack-1x  fa-comments"></i>
+						</span>
+					</a>
+					<!-- ENDIF gitlabData.projects.major.avatar_url -->
+					<span class="sub-title">{gitlabData.projects.major.name}</span>
+					<span class="sub-intro cutoff">{gitlabData.projects.major.major_lastActive}</span>
+				</div>
+				<!-- END gitlabData.projects -->
+			</div>
+		</div>
 	</div>
 </div>
 <div widget-area="sidebar" class="col-lg-3 col-sm-12 hidden"></div>

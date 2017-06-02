@@ -52,7 +52,7 @@ define('admin/manage/category', [
 			}
 		}
 
-		$('.blockclass, form.category select').each(function () {
+		$('.blockclass, form.category select, form.category textarea').each(function () {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
 		});

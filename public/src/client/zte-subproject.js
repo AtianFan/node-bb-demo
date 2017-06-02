@@ -4,18 +4,13 @@
 define('forum/zte-subproject', [
 	'forum/infinitescroll'
 ], function (infinitescroll) {
-	var Project = {};
+	var SubProject = {};
 
-	function removeListeners() {
-		socket.removeListener('event:new_topic', Category.onNewTopic);
-		categoryTools.removeListeners();
-	}
+	SubProject.init = function () {
 
-	Project.init = function () {
-
-		Project.cssSet();
+		SubProject.cssSet();
 		$('.project-body').removeClass('hidden');
-		Project.echarts();
+		SubProject.echarts();
 
 		$(".contribute span").click(function(e){
 			$(this).siblings('span').removeClass('on');
@@ -24,13 +19,15 @@ define('forum/zte-subproject', [
 			$('#'+$(this).attr('id')+'-echarts').removeClass('hidden');
 		})
 
+		$(document).find('.timeago').timeago();
+
 		$(window).resize(function(){
-			Project.cssSet();
+			SubProject.cssSet();
 		});		
 
 	};
 
-	Project.cssSet = function () {
+	SubProject.cssSet = function () {
 		var winWidth = $(window).width();
 		var padLeft = 0;
 
@@ -44,11 +41,48 @@ define('forum/zte-subproject', [
 
 		$('.project-body').css('padding-left',padLeft);
 
-		$('.contribute-div,#act-echarts').css('width',(winWidth*0.76-padLeft-50));
+		$('.contribute-div,#act-echarts,.project-body .content').css('width',(winWidth*0.76-padLeft-50));
 		$('.contribute span').css('margin-right',50);
 	}
 
-	Project.echarts = function () {
+	SubProject.echarts = function () {
+		var commitsLegendData = [];
+		var commitsSeriesData = [];
+		var commitsOthers = 0;
+		var commitsTotalNums = 0;
+		if(ajaxify.data.gitlabData){
+			//取得commits的总和
+			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
+				commitsTotalNums += item.commits;
+			})
+
+            $("#commitsDevNum").html(ajaxify.data.gitlabData.contributors.member_contributions.length)
+
+			//取得每个人commits的百分值
+			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
+				if(index < 10){
+					commitsLegendData.push({
+						name: item.name + ' ' + (item.commits/commitsTotalNums*100).toFixed(2)+'%',
+	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+					});
+					commitsSeriesData.push({
+						value: item.commits,
+						name: item.name + ' ' + (item.commits/commitsTotalNums*100).toFixed(2)+'%'
+					});
+				}else{
+					commitsOthers += item.commits;
+				}
+			})
+
+			commitsLegendData.push({
+				name: 'others ' + Math.floor(commitsOthers/commitsTotalNums*100)+'%',
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+			});
+			commitsSeriesData.push({
+				value: commitsOthers,
+				name: 'others ' + Math.floor(commitsOthers/commitsTotalNums*100)+'%'
+			});
+		}
 		var commitsChart = echarts.init(document.getElementById('commits-echarts'));
 		var commitsOption = {
             legend: {
@@ -57,49 +91,68 @@ define('forum/zte-subproject', [
                 y : 50,
                 textStyle:{color:'#646464',fontSize : '14',},
                 formatter: function (name) {
-                    name = name.replace('%','0');
-                    return name;
+                    var num = Math.ceil(commitsTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
+                    return name.split(" ")[0] + ' ' +  num;
                 },
                 tooltip: {
                     show: true
                 },
-                data:[
-	                {
-	                    name:'王小虎 20%',
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'22'}
-	                },
-                    {
-                        name:'黄兴晖 80%',
-                        textStyle : {fontFamily:'Microsoft YaHei', fontSize:'22'}
-                    }]
+                data:commitsLegendData
             },
             series : [
                 {
                     name:'123',
                     type:'pie',
                     radius : '55%',
-                    center : ['50%', '50%'],
+                    center : ['55%', '50%'],
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '22'
+                                fontSize : '18'
                             }
                         }
                     },
-                    data:[
-                        {
-                            value:200,
-                            name:'王小虎 20%'
-                        },
-                        {
-                            value:800,
-                            name:'黄兴晖 80%'
-                        }
-                    ]
+                    data:commitsSeriesData
                 }
             ]
         }
         commitsChart.setOption(commitsOption);
+
+		var rowsLegendData = [];
+		var rowsSeriesData = [];
+		var rowsOthers = 0;
+		var rowsTotalNums = 0;
+		if(ajaxify.data.gitlabData.commitRows.length > 1){
+			rowsTotalNums = ajaxify.data.gitlabData.commitRows[2].match(/\d+/)[0];
+		}
+
+		if(ajaxify.data.gitlabData){
+			//取得additions和deletions的总和
+			//取得每个人additions、deletions和的百分值
+			ajaxify.data.gitlabData.commitRows.forEach(function(item,index){
+				var itemArr = item.replace(/\s+/g," ").split(" ");
+				if(index < 14 && index > 3 && itemArr.length > 1){
+					rowsLegendData.push({
+						name: itemArr[2] + ' ' + itemArr[3],
+	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+					});
+					rowsSeriesData.push({
+						value: itemArr[1],
+						name: itemArr[2] + ' ' + itemArr[3]
+					});
+				}else if( index >= 14 && itemArr.length > 1){
+					rowsOthers += itemArr[1];
+				}
+			})
+			rowsLegendData.push({
+				name: 'others ' + Math.floor(rowsOthers/rowsTotalNums*100)+'%',
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+			});
+			rowsSeriesData.push({
+				value: rowsOthers,
+				name: 'others ' + Math.floor(rowsOthers/rowsTotalNums*100)+'%'
+			});
+		}
 
         var rowsChart = echarts.init(document.getElementById('rows-echarts'));
 		var rowsOption = {
@@ -109,49 +162,63 @@ define('forum/zte-subproject', [
                 y : 50,
                 textStyle:{color:'#646464',fontSize : '14',},
                 formatter: function (name) {
-                    name = name.replace('%','0');
-                    return name;
+                    var num = Math.ceil(rowsTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
+                    return name.split(" ")[0] + ' ' +  num;
                 },
                 tooltip: {
                     show: true
                 },
-                data:[
-	                {
-	                    name:'王小虎 30%',
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'22'}
-	                },
-                    {
-                        name:'黄兴晖 70%',
-                        textStyle : {fontFamily:'Microsoft YaHei', fontSize:'22'}
-                    }]
+                data: rowsLegendData
             },
             series : [
                 {
                     name:'123',
                     type:'pie',
                     radius : '55%',
-                    center : ['50%', '50%'],
+                    center : ['55%', '50%'],
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '22'
+                                fontSize : '18'
                             }
                         }
                     },
-                    data:[
-                        {
-                            value:300,
-                            name:'王小虎 30%'
-                        },
-                        {
-                            value:700,
-                            name:'黄兴晖 70%'
-                        }
-                    ]
+                    data: rowsSeriesData
                 }
             ]
         }
         rowsChart.setOption(rowsOption);
+
+        var date = new Date();
+	    var fullYear = date.getFullYear();
+	    var month = date.getMonth();
+	    var firstDay = new Date(fullYear,month,1);
+	    var oneDay= 1000*60*60*24;
+	    var preMonthLastDay = new Date(firstDay - oneDay).getDate();
+	    var xAxisData = [];
+	    var seriesData = [];
+
+		for(var j = 0; j < preMonthLastDay; j++){
+			//创建[1,2,3,4...,31]数组
+			xAxisData[j] = j + 1;
+			//创建[0,0,0...,0]数组
+			seriesData[j] = 0;
+		}
+
+		var commitsNum = 0;
+
+		if(ajaxify.data.gitlabData){
+			for(var i in ajaxify.data.gitlabData.commits){
+				//取2017-04-01T00:00.000+08:00中的day数值
+				seriesData[parseInt(i.slice(8,10))-1]++;
+				commitsNum++
+			}
+		}
+
+		$("#time-durations").html("Commit statistics for master " + fullYear + "-" + (month + 1));
+		$("#commits-durations").html(commitsNum + " commits during " + preMonthLastDay + " days");
+		$("#aver-durations").html("Average " + Math.floor(commitsNum/preMonthLastDay) + " commits per day");
+		$("#authors-durations").html("Contributed by " + ajaxify.data.gitlabData.contributors.member_contributions.length + " authors");
 
         var actChart = echarts.init(document.getElementById('act-echarts'));
 		var actOption = {
@@ -175,7 +242,8 @@ define('forum/zte-subproject', [
                 {
                     type : 'category',
                     boundaryGap : false,
-                    data : [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+                    data : xAxisData 
+                    // [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
                 }
             ],
             yAxis : [
@@ -213,7 +281,8 @@ define('forum/zte-subproject', [
                             color: '#88d3a1'
                         }
                     },
-                    data:[120, 132, 101, 134, 90, 230, 210,412,235,632,737,123,523,123,646,285,352]
+                    data: seriesData
+                    // [120, 132, 101, 134, 90, 230, 210,412,235,632,737,123,523,123,646,285,352]
                 }
             ]
         };
@@ -221,5 +290,5 @@ define('forum/zte-subproject', [
         
 	}
 
-	return Project;
+	return SubProject;
 });

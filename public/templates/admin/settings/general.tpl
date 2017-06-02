@@ -19,6 +19,9 @@
 			<label>[[admin/settings/general:title]]</label>
 			<input class="form-control" type="text" placeholder="[[admin/settings/general:title.name]]" data-field="title" />
 
+			<label>外部服务设置</label>
+			<input class="form-control" type="text" placeholder="http://10.45.61.11:3000" data-field="serviceUrl" />
+
 			<div class="checkbox">
 				<label for="showSiteTitle" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="showSiteTitle" name="showSiteTitle" />
