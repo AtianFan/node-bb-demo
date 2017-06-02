@@ -17,10 +17,6 @@ var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../../public/src/utils');
 var translator = require('../../public/src/modules/translator');
-var gitlab = require('gitlab')({
-  url:   'http://gitlab.ztesoft.com',
-  token: 'dn1c5DsVQcLy3xcJQ44k'
-});
 
 
 var projectController = {};
