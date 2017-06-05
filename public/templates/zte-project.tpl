@@ -82,7 +82,7 @@
 				<!-- BEGIN gitlabData.projects -->
 				<div class="pro-single-div mb15">
 					<!-- IF gitlabData.projects.major.avatar_url -->
-					<a href="http://gitlab.ztesoft.com/{gitlabData.projects.major.user_name}" title="{gitlabData.project_member.user_name}" target="_blank">
+					<a href="http://gitlab.ztesoft.com/{gitlabData.projects.major.user_name}" title="{gitlabData.projects.major.user_name}" target="_blank">
 						<img src="http://gitlab.ztesoft.com/uploads/user/avatar/{gitlabData.projects.major.user_id}/{gitlabData.projects.major.avatar_url}">
 					</a>
 					<!-- ELSE -->

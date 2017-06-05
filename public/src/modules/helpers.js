@@ -139,13 +139,13 @@
 			if(child.backgroundImage){
 				html += '<a href="' + link + '" style="display: inherit;margin-bottom: 15px;">' +
 						'<span class="icon" style="background-image:url(' + child.backgroundImage +')">' +
-						'</span></a><small>' + child.name + '</small> ';
+						'</span></a><a href="' + link + '"><small>' + child.name + '</small></a>';
 			}else{
 				html += '<a href="' + link + '">' +
 						'<span class="fa-stack fa-lg">' +
 						'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
 						'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
-						'</span></a><small>' + child.name + '</small> ';
+						'</span></a><a href="' + link + '"><small>' + child.name + '</small></a>';
 			}
 			html += '<span class="small-tag" title="[[category:totalTopicCount]]">' + 
 					'<i class="fa fa-tag"></i>' + category.totalTopicCount + '</span>' +

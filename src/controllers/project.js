@@ -292,7 +292,9 @@ projectController.get = function (req, res, callback) {
 					var childrenArr = [];
 
 					categoryData.children.forEach(function(item,index){
-						childrenArr.push(url.parse(item.gitlabLink).pathname.replace('.git',''));
+						if(item.gitlabLink){
+							childrenArr.push(url.parse(item.gitlabLink).pathname.replace('.git',''));
+						}
 					})
 
 					var host = meta.config['serviceUrl'];
@@ -318,17 +320,6 @@ projectController.get = function (req, res, callback) {
 						}).on('end', function(){
 							categoryData.gitlabData = JSON.parse(gitlabData);
 							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
-
-							// var size = categoryData.gitlabData.repository.repository_size
-							// if (size < 1024) {
-							// 	categoryData.gitlabData.repository.repository_size = size + ' B';
-							// } else if (size < 1024 * 1024) {
-							// 	categoryData.gitlabData.repository.repository_size = (size / 1024).toFixed(2) + ' KB';
-							// } else {
-							// 	categoryData.gitlabData.repository.repository_size = (size / 1024 / 1024).toFixed(2) + ' MB';
-							// }
-
-							// categoryData.lastTopic = categoryData.topics[categoryData.topics.length - 1];
 
 							res.render(tplName, categoryData);
 						})  
