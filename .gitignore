@@ -29,7 +29,6 @@ pidfile
 # templates
 
 
-/public/sounds
 
 # compiled files
 /public/stylesheet.css
