@@ -326,7 +326,7 @@ projectController.get = function (req, res, callback) {
 					});  
 					
 					req_g.on('error', function (e) {  
-						console.log('problem with request: ' + e.message);  
+						console.log('problem with request: ' + e.message);
 					});  
 					
 					req_g.end(); 

@@ -63,7 +63,7 @@ define('forum/zte-subproject', [
 				if(index < 10){
 					commitsLegendData.push({
 						name: item.name + ' ' + (item.commits/commitsTotalNums*100).toFixed(2)+'%',
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
 					});
 					commitsSeriesData.push({
 						value: item.commits,
@@ -76,7 +76,7 @@ define('forum/zte-subproject', [
 
 			commitsLegendData.push({
 				name: 'others ' + Math.floor(commitsOthers/commitsTotalNums*100)+'%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
 			});
 			commitsSeriesData.push({
 				value: commitsOthers,
@@ -108,7 +108,7 @@ define('forum/zte-subproject', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '18'
+                                fontSize : '16'
                             }
                         }
                     },
@@ -134,23 +134,23 @@ define('forum/zte-subproject', [
 				if(index < 14 && index > 3 && itemArr.length > 1){
 					rowsLegendData.push({
 						name: itemArr[2] + ' ' + itemArr[3],
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
 					});
 					rowsSeriesData.push({
 						value: itemArr[1],
 						name: itemArr[2] + ' ' + itemArr[3]
 					});
 				}else if( index >= 14 && itemArr.length > 1){
-					rowsOthers += itemArr[1];
+					rowsOthers += parseInt(itemArr[1]);
 				}
 			})
 			rowsLegendData.push({
-				name: 'others ' + Math.floor(rowsOthers/rowsTotalNums*100)+'%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+				name: 'others ' + (rowsOthers/rowsTotalNums*100).toFixed(2)+'%',
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
 			});
 			rowsSeriesData.push({
 				value: rowsOthers,
-				name: 'others ' + Math.floor(rowsOthers/rowsTotalNums*100)+'%'
+				name: 'others ' + (rowsOthers/rowsTotalNums*100).toFixed(2)+'%'
 			});
 		}
 
@@ -179,7 +179,7 @@ define('forum/zte-subproject', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '18'
+                                fontSize : '16'
                             }
                         }
                     },

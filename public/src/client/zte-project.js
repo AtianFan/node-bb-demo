@@ -80,7 +80,7 @@ define('forum/zte-project', [
                 }
                 commitsDevLegendData.push({
                     name: item[1] + ' ' + Math.floor(item[0]/commitsDevTotalNums*100) + '%',
-                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
                 });
                 commitsDevSeriesData.push({
                     value: item[0],
@@ -114,7 +114,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '18'
+                                fontSize : '16'
                             }
                         }
                     },
@@ -164,7 +164,7 @@ define('forum/zte-project', [
                     name: item[1] + " " + (item[0] / rowsDevTotalNums * 100).toFixed(2) + "%",
                     textStyle: {
                         fontFamily: "Microsoft YaHei",
-                        fontSize: "18"
+                        fontSize: "16"
                     }
                 });
                 rowsDevSeriesData.push({
@@ -199,7 +199,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '18'
+                                fontSize : '16'
                             }
                         }
                     },
@@ -222,7 +222,7 @@ define('forum/zte-project', [
             }
             commitsProLegendData.push({
                 name: item[1] + ' ' + Math.floor(item[0]/commitsProTotalNums*100) + '%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
             });
             commitsProSeriesData.push({
                 value: item[0],
@@ -255,7 +255,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '18'
+                                fontSize : '16'
                             }
                         }
                     },
@@ -278,7 +278,7 @@ define('forum/zte-project', [
             }
             rowsProLegendData.push({
                 name: item[1] + ' ' + Math.floor(item[0]/rowsProTotalNums*100) + '%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'18'}
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
             });
             rowsProSeriesData.push({
                 value: item[0],
@@ -311,7 +311,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '18'
+                                fontSize : '16'
                             }
                         }
                     },
