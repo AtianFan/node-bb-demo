@@ -8,6 +8,7 @@ sftp-config.json
 config.json
 jsconfig.json
 public/src/nodebb.min.js
+public/templates
 !src/views/config.json
 public/css/*.css
 *.sublime-project
