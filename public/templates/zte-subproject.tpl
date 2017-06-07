@@ -52,7 +52,7 @@
 			</div>
 	    </div>
 	    <div class="activity-level">
-	    	<h3>开发者贡献</h3>
+	    	<h3>社区活跃度</h3>
 	    	<p id="time-durations"></p>
 	    	<ul>
 	    		<li id="commits-durations"></li>

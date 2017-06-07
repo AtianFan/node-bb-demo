@@ -53,7 +53,7 @@ define('forum/zte-subproject', [
 		if(ajaxify.data.gitlabData){
 			//取得commits的总和
 			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
-				commitsTotalNums += item.commits;
+				commitsTotalNums += parseInt(item.commits);
 			})
 
             $("#commitsDevNum").html(ajaxify.data.gitlabData.contributors.member_contributions.length)
@@ -62,15 +62,15 @@ define('forum/zte-subproject', [
 			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
 				if(index < 10){
 					commitsLegendData.push({
-						name: item.name + ' ' + (item.commits/commitsTotalNums*100).toFixed(2)+'%',
+						name: item.name + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%',
 	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
 					});
 					commitsSeriesData.push({
 						value: item.commits,
-						name: item.name + ' ' + (item.commits/commitsTotalNums*100).toFixed(2)+'%'
+						name: item.name + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%'
 					});
 				}else{
-					commitsOthers += item.commits;
+					commitsOthers += parseInt(item.commits);
 				}
 			})
 
