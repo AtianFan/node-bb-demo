@@ -215,8 +215,8 @@ define('forum/zte-subproject', [
 			}
 		}
 
-		$("#time-durations").html("社区" + fullYear + "-" + (month + 1) + "月份数据");
-		$("#commits-durations").html("当月提交总次数：" + commitsNum);
+		$("#time-durations").html("社区" + fullYear + "-" + month + "月份数据");
+		$("#commits-durations").html("最近一个月提交总次数：" + commitsNum);
 		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/preMonthLastDay));
 		$("#authors-durations").html("总计" + ajaxify.data.gitlabData.contributors.member_contributions.length + "贡献者");
 
