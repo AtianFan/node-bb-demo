@@ -77,13 +77,13 @@
 			<div class='sub-tit'><i class="fa fa-tasks"></i>任务</div>
 			<span class="pro-txt">Open</span><span class='pro-data'>{gitlabData.issues.open}</span>
 			<span class="pro-txt">Closed</span><span class='pro-data'>{gitlabData.issues.closed}</span>
-			<span class="pro-txt">All</span><span class='pro-data'>412</span>
+			<span class="pro-txt">All</span><span class='pro-data'>{gitlabData.issues.all}</span>
 		</div>
 		<div class="pro-item">
 			<div class='sub-tit'><i class="fa fa-flag"></i>里程碑</div>
 			<span class="pro-txt">Open</span><span class='pro-data'>{gitlabData.milestones.active}</span>
 			<span class="pro-txt">Closed</span><span class='pro-data'>{gitlabData.milestones.closed}</span>
-			<span class="pro-txt">All</span><span class='pro-data'>412</span>
+			<span class="pro-txt">All</span><span class='pro-data'>{gitlabData.milestones.all}</span>
 		</div>
 		<div class="pro-item">
 			<div class='sub-tit'><i class="fa fa-object-group"></i>知识库<span class='pro-data'>{gitlabData.wikiNums}</span></div>
@@ -91,12 +91,12 @@
 			<div class="pro-time timeago cl9" title="{gitlabData.lastEdit.lastEditTime}"></div>
 		</div>
 		<!-- ENDIF gitlabData -->
-		<!-- IF gitlabLink -->
 		<div class="pro-item">
 			<div class='sub-tit'><i class="fa fa-object-group"></i>站点演示</div>
-			<span class="cl3">{gitlabLink}</span>
+			<!-- IF webLink -->
+			<span class="cl3">{webLink}</span>
+			<!-- ENDIF webLink -->
 		</div>
-		<!-- ENDIF gitlabLink -->
 		<div class="pro-item">
 			<div class='sub-tit'><i class="fa fa-object-group"></i>项目论坛</div>
 			<div>

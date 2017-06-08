@@ -206,6 +206,7 @@ define('forum/zte-subproject', [
 		}
 
 		var commitsNum = 0;
+        var commitsPeopleNum = 0;
 
 		if(ajaxify.data.gitlabData){
 			for(var i in ajaxify.data.gitlabData.commits){
@@ -213,12 +214,15 @@ define('forum/zte-subproject', [
 				seriesData[parseInt(i.slice(8,10))-1]++;
 				commitsNum++
 			}
+            for(var i in ajaxify.data.gitlabData.commitsPeople){
+                commitsPeopleNum++
+            }
 		}
 
 		$("#time-durations").html("社区" + fullYear + "-" + month + "月份数据");
 		$("#commits-durations").html("最近一个月提交总次数：" + commitsNum);
 		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/preMonthLastDay));
-		$("#authors-durations").html("总计" + ajaxify.data.gitlabData.contributors.member_contributions.length + "贡献者");
+		$("#authors-durations").html("贡献者：" + commitsPeopleNum);
 
         var actChart = echarts.init(document.getElementById('act-echarts'));
 		var actOption = {

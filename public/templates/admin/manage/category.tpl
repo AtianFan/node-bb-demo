@@ -96,6 +96,14 @@
 									</label>
 									<input id="cid-{category.cid}-gitlabLink" type="text" class="form-control" placeholder="http://gitlab.ztesoft.com/..." data-name="gitlabLink" value="{category.gitlabLink}" />
 								</div>
+							</div><br />
+							<div class="col-sm-8 col-xs-12">
+								<div class="form-group">
+									<label for="cid-{category.cid}-gitlabLink">
+										站点演示
+									</label>
+									<input id="cid-{category.cid}-webLink" type="text" class="form-control" placeholder="http://http://fish.ztesoft.com/fish-show/..." data-name="webLink" value="{category.webLink}" />
+								</div>
 							</div>
 						</fieldset>
 						<fieldset>
