@@ -59,13 +59,13 @@ define('forum/zte-project', [
 
                 it.contributors.forEach(function(item,index){
                     //取得commits的总和
-                    commitsDevTotalNums += item.commits;
-                    commitsProTmpObj[it.project_name] += item.commits
+                    commitsDevTotalNums += parseInt(item.commits);
+                    commitsProTmpObj[it.project_name] += parseInt(item.commits)
 
                     if(commitsDevTmpObj[item.name]){
-                        commitsDevTmpObj[item.name] = commitsDevTmpObj[item.name] + item.commits;
+                        commitsDevTmpObj[item.name] = commitsDevTmpObj[item.name] + parseInt(item.commits);
                     }else{
-                        commitsDevTmpObj[item.name] = item.commits;
+                        commitsDevTmpObj[item.name] = parseInt(item.commits);
                     }
                 })
             })
@@ -79,12 +79,12 @@ define('forum/zte-project', [
                     return
                 }
                 commitsDevLegendData.push({
-                    name: item[1] + ' ' + Math.floor(item[0]/commitsDevTotalNums*100) + '%',
+                    name: item[1] + ' ' + (item[0]/commitsDevTotalNums*100).toFixed(2) + '%',
                     textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
                 });
                 commitsDevSeriesData.push({
                     value: item[0],
-                    name: item[1] + ' ' + Math.floor(item[0]/commitsDevTotalNums*100) + '%'
+                    name: item[1] + ' ' + (item[0]/commitsDevTotalNums*100).toFixed(2) + '%'
                 });
             })
         }
@@ -221,12 +221,12 @@ define('forum/zte-project', [
                 return
             }
             commitsProLegendData.push({
-                name: item[1] + ' ' + Math.floor(item[0]/commitsProTotalNums*100) + '%',
+                name: item[1] + ' ' + (item[0]/commitsProTotalNums*100).toFixed(2) + '%',
                 textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
             });
             commitsProSeriesData.push({
                 value: item[0],
-                name: item[1] + ' ' + Math.floor(item[0]/commitsProTotalNums*100) + '%'
+                name: item[1] + ' ' + (item[0]/commitsProTotalNums*100).toFixed(2)  + '%'
             });
         })
 
@@ -277,12 +277,12 @@ define('forum/zte-project', [
                 return
             }
             rowsProLegendData.push({
-                name: item[1] + ' ' + Math.floor(item[0]/rowsProTotalNums*100) + '%',
+                name: item[1] + ' ' + (item[0]/rowsProTotalNums*100).toFixed(2)  + '%',
                 textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
             });
             rowsProSeriesData.push({
                 value: item[0],
-                name: item[1] + ' ' + Math.floor(item[0]/rowsProTotalNums*100) + '%'
+                name: item[1] + ' ' + (item[0]/rowsProTotalNums*100).toFixed(2)  + '%'
             });
         })
 

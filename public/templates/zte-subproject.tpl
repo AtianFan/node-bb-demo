@@ -93,9 +93,8 @@
 		<!-- ENDIF gitlabData -->
 		<div class="pro-item">
 			<div class='sub-tit'><i class="fa fa-object-group"></i>站点演示</div>
-			<!-- IF webLink -->
-			<span class="cl3">{webLink}</span>
-			<!-- ENDIF webLink -->
+			
+			<span class="cl3"><!-- IF webLink -->{webLink}<!-- ENDIF webLink --></span>
 		</div>
 		<div class="pro-item">
 			<div class='sub-tit'><i class="fa fa-object-group"></i>项目论坛</div>
