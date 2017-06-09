@@ -20,7 +20,7 @@ module.exports = function (Meta) {
 		winston.verbose('Checking dependencies for outdated modules');
 
 		async.every(modules, function (module, next) {
-			fs.readFile(path.join(__dirname, '../../node_modules/', module, 'package.json'), {
+			fs.readFile(path.join(__dirname, '../../node_modules/', module.replace('@ngweb/',''), 'package.json'), {
 				encoding: 'utf-8'
 			}, function (err, pkgData) {
 				// If a bundled plugin/theme is not present, skip the dep check (#3384)
