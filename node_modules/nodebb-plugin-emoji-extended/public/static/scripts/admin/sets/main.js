@@ -1,0 +1,1 @@
+"use strict";$(document).ready(function(){require(["plugin/emoji-extended/admin/sets/container"],function(a){a.init(),a.updateActive()})});

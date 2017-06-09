@@ -1,0 +1,1 @@
+"use strict";define("plugin/emoji-extended/admin/sets/data",function(){return ajaxify.data.sets});

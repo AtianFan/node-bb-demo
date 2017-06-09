@@ -1,0 +1,10 @@
+{
+  "id": "nodebb-plugin-emoji-one",
+  "version": "1.1.5+115",
+  "name": "Emoji One",
+  "description": "The emoji-one set for NodeBB (requires nodebb-plugin-emoji-extended)",
+  "library": "lib/controller.js",
+  "staticDirs": {"static": "public/static/"},
+  "languages": "public/locales",
+  "defaultLang": "en_US"
+}

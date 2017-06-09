@@ -1,0 +1,20 @@
+<div class="account">
+	<!-- IMPORT partials/account_menu.tpl -->
+
+	<div class="favourites">
+
+		<!-- IF !posts.length -->
+		<div class="alert alert-warning">{noItemsFoundKey}</div>
+		<!-- ENDIF !posts.length -->
+
+		<div class="row">
+			<div class="col-xs-12">
+				<!-- IMPORT partials/posts_list.tpl -->
+
+				<!-- IF config.usePagination -->
+					<!-- IMPORT partials/paginator.tpl -->
+				<!-- ENDIF config.usePagination -->
+			</div>
+		</div>
+	</div>
+</div>
