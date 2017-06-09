@@ -337,7 +337,8 @@ projectController.get = function (req, res, callback) {
 					var host = meta.config['serviceUrl'];
 
 					if(!categoryData.gitlabLink){
-						categoryData.gitlabLink = 'http://gitlab.ztesoft.com/fish/fish-desktop.git';
+						res.render(tplName, categoryData);
+						return;
 					}
 					var	project_path_name = url.parse(categoryData.gitlabLink).pathname;
 
