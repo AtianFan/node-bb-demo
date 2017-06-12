@@ -1,0 +1,1 @@
+﻿This file is used to keep the templates folder displaying on the gitlab repository! 
