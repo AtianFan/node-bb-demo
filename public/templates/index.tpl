@@ -60,8 +60,8 @@
 			<a href="">关于我们</a>
 			<a href="">意见反馈</a>
 			<a href="">友情链接</a>
-			<a href="">订阅微信</a>
-			<span>Copyright © 2015-2016 中兴开发者社区. All rights reserved.</span>
+			<!--a href="">订阅微信</a-->
+			<span>Copyright © 2015-2016 中兴软创技术社区. All rights reserved.</span>
 			<span class="version-span">Version 1.0</span>
 		</div>
 	</div>

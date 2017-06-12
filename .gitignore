@@ -49,7 +49,9 @@ pidfile
 
 ## File-based project format:
 *.ipr
-*.iws
+*.iws.njsproj
+*.njsproj
+
 
 ## Transifex
 tx.exe
