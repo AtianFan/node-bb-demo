@@ -1,4 +1,20 @@
-����NodeBB���������������������
+## 基于NodeBB改造的中兴软创技术社区
+技术论坛--NodeBB-\
+   |              > ==>内容聚合==>社区门户
+项目社区--Gitlab-/
+
+### 主要扩展功能有：
+* 门户首页
+* 快速入口
+* 每周排行
+* 公告
+* 头条
+* 项目社区数据聚合
+* UI界面个性化
+
+### 怎样贡献
+请联系杨学书或者辛璟奋加入，本项目给予nodejs，socket.io开发
+
 
 # <img alt="NodeBB" src="http://i.imgur.com/mYxPPtB.png" />
 
