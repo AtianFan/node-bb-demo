@@ -363,9 +363,9 @@ $(document).ready(function () {
 		footerTop = ($(window).scrollTop()+$(window).height()-footerHeight)+"px";
 		//如果页面内容高度小于屏幕高度，div#footer将绝对定位到屏幕底部，否则div#footer保留它的正常静态定位
 		if(($(document.body).height()+footerHeight) < $(window).height()) {
-			$(".footer-cont").css({ position: "absolute",left:"0" }).stop().css({top:footerTop});
+			$(".footer-cont").css({ position: "absolute",left:"0"}).stop().css({top:footerTop});
 		}else{
-			$(".footer-cont").css({ position: "static",left:"0" })
+			$(".footer-cont").css({ position: "relative",left:"0" })
 		}
 	}
 
