@@ -365,7 +365,7 @@ $(document).ready(function () {
 		if(($(document.body).height()+footerHeight) < $(window).height()) {
 			$(".footer-cont").css({ position: "absolute",left:"0"}).stop().css({top:footerTop});
 		}else{
-			$(".footer-cont").css({ position: "relative",left:"0" })
+			$(".footer-cont").css({ position: "static",left:"0" })
 		}
 	}
 
