@@ -216,6 +216,10 @@ $(document).ready(function () {
 			
 		positionFooter();
 
+		$(window).bind("load", function() {
+			positionFooter();
+		});
+
 		$(window).scroll(positionFooter).resize(positionFooter);
 
 		var timeElapsed = Date.now() - ajaxifyTimer;
