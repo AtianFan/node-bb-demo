@@ -196,6 +196,7 @@ $(document).ready(function () {
 
 	ajaxify.end = function (url, tpl_url) {
 		function done() {
+
 			if (--count === 0) {
 				$(window).trigger('action:ajaxify.end', {url: url, tpl_url: tpl_url, title: ajaxify.data.title});
 			}
@@ -209,6 +210,13 @@ $(document).ready(function () {
 		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 
 		app.processPage();
+
+		var footerHeight = 0;
+		var footerTop = 0;
+			
+		positionFooter();
+
+		$(window).scroll(positionFooter).resize(positionFooter);
 
 		var timeElapsed = Date.now() - ajaxifyTimer;
 		if (config.environment === 'development' && !isNaN(timeElapsed)) {
@@ -344,6 +352,22 @@ $(document).ready(function () {
 			});
 		}
 	};
+	
+	function positionFooter() {
+		// 获取页脚的高度
+		footerHeight = $(".footer-cont").height();
+		// 获取页脚的高度
+		/*
+			scrollTop() 设置或获取位于对象最顶端和窗口中可见内容的最顶端之间的距离 
+		*/
+		footerTop = ($(window).scrollTop()+$(window).height()-footerHeight)+"px";
+		//如果页面内容高度小于屏幕高度，div#footer将绝对定位到屏幕底部，否则div#footer保留它的正常静态定位
+		if(($(document.body).height()+footerHeight) < $(window).height()) {
+			$(".footer-cont").css({ position: "absolute",left:"0" }).stop().css({top:footerTop});
+		}else{
+			$(".footer-cont").css({ position: "static",left:"0" })
+		}
+	}
 
 	function ajaxifyAnchors() {
 		function hrefEmpty(href) {
