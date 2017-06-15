@@ -371,7 +371,9 @@ projectController.get = function (req, res, callback) {
 
 							categoryData.lastTopic = categoryData.topics[categoryData.topics.length - 1];
 
-							res.render(tplName, categoryData);
+							db.setObjectField("category:" + categoryData.cid, "contributors",categoryData.gitlabData.contributors.member_contributions.length,function(){
+								res.render(tplName, categoryData);
+							})
 						})  
 					});  
 					

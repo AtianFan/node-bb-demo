@@ -91,25 +91,67 @@ define('admin/manage/category', [
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
 		$('#save').on('click', function () {
-			if (Object.keys(modified_categories).length) {
-				socket.emit('admin.categories.update', modified_categories, function (err, result) {
-					if (err) {
-						return app.alertError(err.message);
-					}
+			var gitlablink = $('[data-name="gitlabLink"]').val();
+			if($('[data-name="gitlabLink"]').val() != ''){
+				// app.config.serviceUrl
+				$.ajax({
+					url:  'http://127.0.0.1:1337/contributors?repo=' + gitlablink.split('//')[1].substring(gitlablink.split('//')[1].indexOf('/')),
+					cache: false,
+					success: function (data) {
+						if (!data) {
+							return;
+						}
 
-					if (result && result.length) {
-						app.flags._unsaved = false;
-						app.alert({
-							title: 'Updated Categories',
-							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
-							type: 'success',
-							timeout: 2000
-						});
+						$('[data-name="contributors"]').val(parseInt(data));
+						modified($('[data-name="contributors"]'));
+						
+						if (Object.keys(modified_categories).length) {
+							socket.emit('admin.categories.update', modified_categories, function (err, result) {
+								if (err) {
+									return app.alertError(err.message);
+								}
+
+								if (result && result.length) {
+									app.flags._unsaved = false;
+									app.alert({
+										title: 'Updated Categories',
+										message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
+										type: 'success',
+										timeout: 2000
+									});
+								}
+							});
+							modified_categories = {};
+						}
+						return false;
+					},
+					error: function (data, textStatus) {
+						if (data.status === 0 && textStatus === 'error') {
+							data.status = 500;
+						}
 					}
 				});
-				modified_categories = {};
+			}else{		
+				if (Object.keys(modified_categories).length) {
+					socket.emit('admin.categories.update', modified_categories, function (err, result) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+
+						if (result && result.length) {
+							app.flags._unsaved = false;
+							app.alert({
+								title: 'Updated Categories',
+								message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
+								type: 'success',
+								timeout: 2000
+							});
+						}
+					});
+					modified_categories = {};
+				}
+				return false;
 			}
-			return false;
 		});
 
 		$('.purge').on('click', function (e) {

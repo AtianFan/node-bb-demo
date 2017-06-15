@@ -96,6 +96,14 @@
 									</label>
 									<input id="cid-{category.cid}-gitlabLink" type="text" class="form-control" placeholder="http://gitlab.ztesoft.com/..." data-name="gitlabLink" value="{category.gitlabLink}" />
 								</div>
+							</div>
+							<div class="col-sm-8 col-xs-12 hidden">
+								<div class="form-group">
+									<label for="cid-{category.cid}-contributors">
+										贡献者数
+									</label>
+									<input id="cid-{category.cid}-contributors" type="text" class="form-control" placeholder="0" data-name="contributors" value="{category.contributors}" />
+								</div>
 							</div><br />
 							<div class="col-sm-8 col-xs-12">
 								<div class="form-group">
