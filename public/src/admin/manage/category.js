@@ -93,9 +93,8 @@ define('admin/manage/category', [
 		$('#save').on('click', function () {
 			var gitlablink = $('[data-name="gitlabLink"]').val();
 			if($('[data-name="gitlabLink"]').val() != ''){
-				// app.config.serviceUrl
 				$.ajax({
-					url:  'http://127.0.0.1:1337/contributors?repo=' + gitlablink.split('//')[1].substring(gitlablink.split('//')[1].indexOf('/')),
+					url:  app.config.serviceUrl + '/contributors?repo=' + gitlablink.split('//')[1].substring(gitlablink.split('//')[1].indexOf('/')),
 					cache: false,
 					success: function (data) {
 						if (!data) {
