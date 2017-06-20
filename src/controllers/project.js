@@ -320,6 +320,9 @@ projectController.get = function (req, res, callback) {
 						}).on('end', function(){
 							categoryData.gitlabData = JSON.parse(gitlabData);
 							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
+							categoryData.gitlabData.projects.forEach(function(item,index){
+								item.major.name = item.major.name.replace(/@[\s\S]*/g,'');
+							})
 
 							res.render(tplName, categoryData);
 						})  

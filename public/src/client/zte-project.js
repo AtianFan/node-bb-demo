@@ -53,19 +53,19 @@ define('forum/zte-project', [
 
         if(ajaxify.data.gitlabData){
             //取得每个人commits的百分值
-            ajaxify.data.gitlabData.projects.forEach(function(it,index){
+            ajaxify.data.gitlabData.projects.forEach(function(it,i){
 
-                commitsProTmpObj[it.project_name] = 0;
+                commitsProTmpObj[ajaxify.data.children[i].name] = 0;
 
                 it.contributors.forEach(function(item,index){
                     //取得commits的总和
                     commitsDevTotalNums += parseInt(item.commits);
-                    commitsProTmpObj[it.project_name] += parseInt(item.commits)
+                    commitsProTmpObj[ajaxify.data.children[i].name] += parseInt(item.commits)
 
-                    if(commitsDevTmpObj[item.name]){
-                        commitsDevTmpObj[item.name] = commitsDevTmpObj[item.name] + parseInt(item.commits);
+                    if(commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')]){
+                        commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')] = commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')] + parseInt(item.commits);
                     }else{
-                        commitsDevTmpObj[item.name] = parseInt(item.commits);
+                        commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')] = parseInt(item.commits);
                     }
                 })
             })
@@ -134,21 +134,21 @@ define('forum/zte-project', [
         var rowsProTmpObj = {};
 
         if(ajaxify.data.gitlabData){
-            ajaxify.data.gitlabData.projects.forEach(function(it,index){
-                rowsProTmpObj[it.project_name] = 0;
+            ajaxify.data.gitlabData.projects.forEach(function(it,i){
+                rowsProTmpObj[ajaxify.data.children[i].name] = 0;
 
                 it.commitRows.forEach(function(item,index){
                     if(index == 2){
                         rowsDevTotalNums += parseInt(item.match(/\d+/)[0]);
-                        rowsProTmpObj[it.project_name] = parseInt(item.match(/\d+/)[0]);
+                        rowsProTmpObj[ajaxify.data.children[i].name] = parseInt(item.match(/\d+/)[0]);
                     }
 
                     var itemArr = item.replace(/\s+/g," ").split(" ");
-                    if(index > 3){
-                        if(rowsDevTmpObj[itemArr[2]]){
-                            rowsDevTmpObj[itemArr[2]] = rowsDevTmpObj[itemArr[2]] + parseInt(itemArr[1]);
+                    if(index > 3 && itemArr.length > 1){
+                        if(rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')]){
+                            rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')] = rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')] + parseInt(itemArr[1]);
                         }else{
-                            rowsDevTmpObj[itemArr[2]] = parseInt(itemArr[1]);
+                            rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')] = parseInt(itemArr[1]);
                         }
                     }
                 })

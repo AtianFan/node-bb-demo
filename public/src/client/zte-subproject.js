@@ -62,12 +62,12 @@ define('forum/zte-subproject', [
 			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
 				if(index < 10){
 					commitsLegendData.push({
-						name: item.name + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%',
+						name: item.name.replace(/@[\s\S]*/g,'') + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%',
 	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
 					});
 					commitsSeriesData.push({
 						value: item.commits,
-						name: item.name + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%'
+						name: item.name.replace(/@[\s\S]*/g,'') + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%'
 					});
 				}else{
 					commitsOthers += parseInt(item.commits);
@@ -133,12 +133,12 @@ define('forum/zte-subproject', [
 				var itemArr = item.replace(/\s+/g," ").split(" ");
 				if(index < 14 && index > 3 && itemArr.length > 1){
 					rowsLegendData.push({
-						name: itemArr[2] + ' ' + itemArr[3],
+						name: itemArr[2].replace(/@[\s\S]*/g,'') + ' ' + itemArr[3],
 	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
 					});
 					rowsSeriesData.push({
 						value: itemArr[1],
-						name: itemArr[2] + ' ' + itemArr[3]
+						name: itemArr[2].replace(/@[\s\S]*/g,'') + ' ' + itemArr[3]
 					});
 				}else if( index >= 14 && itemArr.length > 1){
 					rowsOthers += parseInt(itemArr[1]);
