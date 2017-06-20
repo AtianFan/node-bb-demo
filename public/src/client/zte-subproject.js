@@ -63,7 +63,7 @@ define('forum/zte-subproject', [
 				if(index < 10){
 					commitsLegendData.push({
 						name: item.name.replace(/@[\s\S]*/g,'') + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%',
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
 					});
 					commitsSeriesData.push({
 						value: item.commits,
@@ -76,7 +76,7 @@ define('forum/zte-subproject', [
 
 			commitsLegendData.push({
 				name: 'others ' + Math.floor(commitsOthers/commitsTotalNums*100)+'%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+                textStyle:{fontSize:'13'}
 			});
 			commitsSeriesData.push({
 				value: commitsOthers,
@@ -88,8 +88,7 @@ define('forum/zte-subproject', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
-                textStyle:{color:'#646464',fontSize : '14',},
+                y : 70,
                 formatter: function (name) {
                     var num = Math.ceil(commitsTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
                     return name.split(" ")[0] + ' ' +  num;
@@ -108,7 +107,7 @@ define('forum/zte-subproject', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
@@ -134,7 +133,7 @@ define('forum/zte-subproject', [
 				if(index < 14 && index > 3 && itemArr.length > 1){
 					rowsLegendData.push({
 						name: itemArr[2].replace(/@[\s\S]*/g,'') + ' ' + itemArr[3],
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
 					});
 					rowsSeriesData.push({
 						value: itemArr[1],
@@ -146,7 +145,7 @@ define('forum/zte-subproject', [
 			})
 			rowsLegendData.push({
 				name: 'others ' + (rowsOthers/rowsTotalNums*100).toFixed(2)+'%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
 			});
 			rowsSeriesData.push({
 				value: rowsOthers,
@@ -159,8 +158,7 @@ define('forum/zte-subproject', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
-                textStyle:{color:'#646464',fontSize : '14',},
+                y : 70,
                 formatter: function (name) {
                     var num = Math.ceil(rowsTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
                     return name.split(" ")[0] + ' ' +  num;
@@ -179,7 +177,7 @@ define('forum/zte-subproject', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
@@ -219,7 +217,7 @@ define('forum/zte-subproject', [
             }
 		}
 
-		$("#time-durations").html("社区" + fullYear + "-" + month + "月份数据");
+		$("#time-durations").html(fullYear + "-" + month + "月份数据");
 		$("#commits-durations").html("最近一个月提交总次数：" + commitsNum);
 		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/preMonthLastDay));
 		$("#authors-durations").html("贡献者：" + commitsPeopleNum);

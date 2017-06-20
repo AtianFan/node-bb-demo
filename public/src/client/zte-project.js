@@ -39,7 +39,7 @@ define('forum/zte-project', [
 
 		$('.project-body').css('padding-left',padLeft);
 
-		$('.contribute-div,#act-echarts,.project-body .content').css('width',(winWidth*0.76-padLeft-50));
+		$('.contribute-div,#act-echarts,.project-body .content,.project-list').css('width',(winWidth*0.76-padLeft-50));
 		$('.contribute span').css('margin-right',50);
 	}
 
@@ -80,7 +80,7 @@ define('forum/zte-project', [
                 }
                 commitsDevLegendData.push({
                     name: item[1] + ' ' + (item[0]/commitsDevTotalNums*100).toFixed(2) + '%',
-                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
                 });
                 commitsDevSeriesData.push({
                     value: item[0],
@@ -94,8 +94,7 @@ define('forum/zte-project', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
-                textStyle:{color:'#646464',fontSize : '14',},
+                y : 70,
                 formatter: function (name) {
                     var num = Math.ceil(commitsDevTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
                     return name.split(" ")[0] + ' ' + num;
@@ -114,7 +113,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
@@ -164,7 +163,7 @@ define('forum/zte-project', [
                     name: item[1] + " " + (item[0] / rowsDevTotalNums * 100).toFixed(2) + "%",
                     textStyle: {
                         fontFamily: "Microsoft YaHei",
-                        fontSize: "16"
+                        fontSize: "13"
                     }
                 });
                 rowsDevSeriesData.push({
@@ -179,7 +178,7 @@ define('forum/zte-project', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
+                y : 70,
                 textStyle:{color:'#646464',fontSize : '14',},
                 formatter: function (name) {
                     var num = Math.ceil(rowsDevTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
@@ -199,7 +198,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
