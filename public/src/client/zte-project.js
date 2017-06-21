@@ -96,8 +96,8 @@ define('forum/zte-project', [
                 x : 20,
                 y : 70,
                 formatter: function (name) {
-                    var num = Math.ceil(commitsDevTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
-                    return name.split(" ")[0] + ' ' + num;
+                    var num = Math.ceil(commitsDevTotalNums*(name.substring(name.lastIndexOf(' ')+1).replace('%',''))*0.01);
+                    return name.substring(0, name.lastIndexOf(' ')) + ' ' + num;
                 },
                 tooltip: {
                     show: true
@@ -181,8 +181,8 @@ define('forum/zte-project', [
                 y : 70,
                 textStyle:{color:'#646464',fontSize : '14',},
                 formatter: function (name) {
-                    var num = Math.ceil(rowsDevTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
-                    return name.split(" ")[0] + ' ' + num;
+                    var num = Math.ceil(rowsDevTotalNums*(name.substring(name.lastIndexOf(' ')+1).replace('%',''))*0.01);
+                    return name.substring(0, name.lastIndexOf(' ')) + ' ' + num;
                 },
                 tooltip: {
                     show: true
@@ -221,7 +221,7 @@ define('forum/zte-project', [
             }
             commitsProLegendData.push({
                 name: item[1] + ' ' + (item[0]/commitsProTotalNums*100).toFixed(2) + '%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
             });
             commitsProSeriesData.push({
                 value: item[0],
@@ -234,11 +234,10 @@ define('forum/zte-project', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
-                textStyle:{color:'#646464',fontSize : '14',},
+                y : 70,
                 formatter: function (name) {
-                    var num = Math.ceil(commitsDevTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
-                    return name.split(" ")[0] + ' ' + num;
+                    var num = Math.ceil(commitsDevTotalNums*(name.substring(name.lastIndexOf(' ')+1).replace('%',''))*0.01);
+                    return name.substring(0,name.lastIndexOf(' ')) + ' ' + num;
                 },
                 tooltip: {
                     show: true
@@ -254,7 +253,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
@@ -277,7 +276,7 @@ define('forum/zte-project', [
             }
             rowsProLegendData.push({
                 name: item[1] + ' ' + (item[0]/rowsProTotalNums*100).toFixed(2)  + '%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
             });
             rowsProSeriesData.push({
                 value: item[0],
@@ -290,11 +289,10 @@ define('forum/zte-project', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
-                textStyle:{color:'#646464',fontSize : '14',},
+                y : 70,
                 formatter: function (name) {
-                    var num = Math.ceil(rowsDevTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
-                    return name.split(" ")[0] + ' ' + num;
+                    var num = Math.ceil(rowsDevTotalNums*(name.substring(name.lastIndexOf(' ')+1).replace('%',''))*0.01);
+                    return name.substring(0, name.lastIndexOf(' ')) + ' ' + num;
                 },
                 tooltip: {
                     show: true
@@ -310,7 +308,7 @@ define('forum/zte-project', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
