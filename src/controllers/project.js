@@ -360,6 +360,7 @@ projectController.get = function (req, res, callback) {
 						}).on('end', function(){
 							categoryData.gitlabData = JSON.parse(gitlabData);
 							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
+							categoryData.gitlabData.last_activity_at = categoryData.gitlabData.last_activity_at.replace(/T[\s\S]*/g,'');
 							categoryData.gitlabData.issues.all = parseInt(categoryData.gitlabData.issues.open) + parseInt(categoryData.gitlabData.issues.closed);
 							categoryData.gitlabData.milestones.all = parseInt(categoryData.gitlabData.milestones.active) + parseInt(categoryData.gitlabData.milestones.closed);
 

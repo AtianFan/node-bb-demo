@@ -217,7 +217,29 @@ define('forum/zte-subproject', [
             }
 		}
 
-		$("#time-durations").html(fullYear + "-" + month + "月份数据");
+        var createDate = ajaxify.data.gitlabData.create_time.replace(/T[\s\S]*/g,'');
+        var s1 = new Date(createDate.replace(/-/g, "/"));
+        var s2 = new Date();
+        var runTime = 0;
+
+        runTime = parseInt((s2.getTime() - s1.getTime()) / 1000);
+        var totalDay = Math.floor(runTime / 86400);
+        var runYear = Math.floor(runTime / 86400 / 365);
+        runTime = runTime % (86400 * 365);
+        var runMonth = Math.floor(runTime / 86400 / 30);
+        runTime = runTime % (86400 * 30);
+        var runDay = Math.floor(runTime / 86400);
+
+        function concatTime(num,str){
+            if(num != 0){
+                return num + str;
+            }else{
+                return '';
+            }
+        }
+
+		$("#create-at").html("项目年龄：" + concatTime(runYear,'年') + concatTime(runMonth,'个月') + concatTime(runDay,'天'));
+		$("#aver-total").html('平均每天提交次数：' + Math.floor(ajaxify.data.gitlabData.repository.commit_count / totalDay));
 		$("#commits-durations").html("最近一个月提交总次数：" + commitsNum);
 		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/preMonthLastDay));
 		$("#authors-durations").html("贡献者：" + commitsPeopleNum);
