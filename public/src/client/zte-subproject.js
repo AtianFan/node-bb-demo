@@ -51,28 +51,45 @@ define('forum/zte-subproject', [
 		var commitsOthers = 0;
 		var commitsTotalNums = 0;
 		if(ajaxify.data.gitlabData){
-			//取得commits的总和
-			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
-				commitsTotalNums += parseInt(item.commits);
-			})
 
             $("#commitsDevNum").html(ajaxify.data.gitlabData.contributors.member_contributions.length)
 
-			//取得每个人commits的百分值
-			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
-				if(index < 10){
+            var member_contributionsObj = {};
+            //合并名字重复的值
+            ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
+                //取得commits的总和
+				commitsTotalNums += parseInt(item.commits);
+
+                if(ajaxify.data.gitlabData.user_merge[item.name]){
+                    var tmp = ajaxify.data.gitlabData.user_merge[item.name];
+
+                    if(member_contributionsObj[tmp]){
+                        member_contributionsObj[tmp] += parseInt(item.commits); 
+                    }else{
+                        member_contributionsObj[tmp] = parseInt(item.commits); 
+                    }
+                }else{
+                    member_contributionsObj[item.name] = parseInt(item.commits); 
+                }
+            })
+
+            var j = 0;
+            //取得每个人commits的百分值
+            for(var i in member_contributionsObj){
+				if(j < 10){
 					commitsLegendData.push({
-						name: item.name.replace(/@[\s\S]*/g,'') + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%',
+						name: i + ' ' + (parseInt(member_contributionsObj[i])/commitsTotalNums*100).toFixed(2)+'%',
 	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
 					});
 					commitsSeriesData.push({
-						value: item.commits,
-						name: item.name.replace(/@[\s\S]*/g,'') + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%'
+						value: parseInt(member_contributionsObj[i]),
+						name: i + ' ' + (parseInt(member_contributionsObj[i])/commitsTotalNums*100).toFixed(2)+'%'
 					});
 				}else{
-					commitsOthers += parseInt(item.commits);
+					commitsOthers += parseInt(member_contributionsObj[i]);
 				}
-			})
+                j++;
+            }
 
 			commitsLegendData.push({
 				name: 'others ' + Math.floor(commitsOthers/commitsTotalNums*100)+'%',
@@ -126,23 +143,36 @@ define('forum/zte-subproject', [
 		}
 
 		if(ajaxify.data.gitlabData){
-			//取得additions和deletions的总和
-			//取得每个人additions、deletions和的百分值
+            var commitRowsObj = {};
 			ajaxify.data.gitlabData.commitRows.forEach(function(item,index){
 				var itemArr = item.replace(/\s+/g," ").split(" ");
 				if(index < 14 && index > 3 && itemArr.length > 1){
-					rowsLegendData.push({
-						name: itemArr[2].replace(/@[\s\S]*/g,'') + ' ' + itemArr[3],
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
-					});
-					rowsSeriesData.push({
-						value: itemArr[1],
-						name: itemArr[2].replace(/@[\s\S]*/g,'') + ' ' + itemArr[3]
-					});
+                    if(ajaxify.data.gitlabData.user_merge[itemArr[2]]){
+                        var tmp = ajaxify.data.gitlabData.user_merge[itemArr[2]];
+
+                        if(commitRowsObj[tmp]){
+                            commitRowsObj[tmp] += parseInt(itemArr[1]); 
+                        }else{
+                            commitRowsObj[tmp] = parseInt(itemArr[1]); 
+                        }
+                    }else{
+                        commitRowsObj[itemArr[2]] = parseInt(itemArr[1]); 
+                    }
 				}else if( index >= 14 && itemArr.length > 1){
 					rowsOthers += parseInt(itemArr[1]);
 				}
-			})
+            })
+            
+            for(var i in commitRowsObj){
+                rowsLegendData.push({
+                    name: i + ' ' + (parseInt(commitRowsObj[i])/rowsTotalNums*100).toFixed(2)+'%',
+                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
+                });
+                rowsSeriesData.push({
+                    value: parseInt(commitRowsObj[i]),
+                    name: i + ' ' + (parseInt(commitRowsObj[i])/rowsTotalNums*100).toFixed(2)+'%'
+                });
+            }
 			rowsLegendData.push({
 				name: 'others ' + (rowsOthers/rowsTotalNums*100).toFixed(2)+'%',
                 textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}

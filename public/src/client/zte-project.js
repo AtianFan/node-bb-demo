@@ -62,10 +62,10 @@ define('forum/zte-project', [
                     commitsDevTotalNums += parseInt(item.commits);
                     commitsProTmpObj[ajaxify.data.children[i].name] += parseInt(item.commits)
 
-                    if(commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')]){
-                        commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')] = commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')] + parseInt(item.commits);
+                    if(commitsDevTmpObj[item.name]){
+                        commitsDevTmpObj[item.name] = commitsDevTmpObj[item.name] + parseInt(item.commits);
                     }else{
-                        commitsDevTmpObj[item.name.replace(/@[\s\S]*/g,'')] = parseInt(item.commits);
+                        commitsDevTmpObj[item.name] = parseInt(item.commits);
                     }
                 })
             })
@@ -73,20 +73,39 @@ define('forum/zte-project', [
             commitsDevTmpObj = sortReverseObj(commitsDevTmpObj);
             
             $("#commitsDevNum").html(commitsDevTmpObj.length)
+            
+            var commitsMergeObj = {};
+            //合并名字重复的值
+            commitsDevTmpObj.forEach(function(item,index){
 
-            commitsDevTmpObj.forEach(function (item,index) {
-                if(index > 10){
-                    return
+                if(ajaxify.data.gitlabData.user_merge[item[1]]){
+                    var tmp = ajaxify.data.gitlabData.user_merge[item[1]];
+
+                    if(commitsMergeObj[tmp]){
+                        commitsMergeObj[tmp] += parseInt(item[0]); 
+                    }else{
+                        commitsMergeObj[tmp] = parseInt(item[0]); 
+                    }
+                }else{
+                    commitsMergeObj[item[1]] = parseInt(item[0]); 
+                }
+            })
+            var j = 0;
+            //取得每个人commits的百分值
+            for(var i in commitsMergeObj){
+                if(j > 10){
+                    break;
                 }
                 commitsDevLegendData.push({
-                    name: item[1] + ' ' + (item[0]/commitsDevTotalNums*100).toFixed(2) + '%',
+                    name: i + ' ' + (commitsMergeObj[i]/commitsDevTotalNums*100).toFixed(2) + '%',
                     textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
                 });
                 commitsDevSeriesData.push({
-                    value: item[0],
-                    name: item[1] + ' ' + (item[0]/commitsDevTotalNums*100).toFixed(2) + '%'
+                    value: commitsMergeObj[i],
+                    name: i + ' ' + (commitsMergeObj[i]/commitsDevTotalNums*100).toFixed(2) + '%'
                 });
-            })
+                j++
+            }
         }
 
 		var commitsDevChart = echarts.init(document.getElementById('commits-dev-echarts'));
@@ -144,10 +163,10 @@ define('forum/zte-project', [
 
                     var itemArr = item.replace(/\s+/g," ").split(" ");
                     if(index > 3 && itemArr.length > 1){
-                        if(rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')]){
-                            rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')] = rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')] + parseInt(itemArr[1]);
+                        if(rowsDevTmpObj[itemArr[2]]){
+                            rowsDevTmpObj[itemArr[2]] = rowsDevTmpObj[itemArr[2]] + parseInt(itemArr[1]);
                         }else{
-                            rowsDevTmpObj[itemArr[2].replace(/@[\s\S]*/g,'')] = parseInt(itemArr[1]);
+                            rowsDevTmpObj[itemArr[2]] = parseInt(itemArr[1]);
                         }
                     }
                 })
@@ -155,22 +174,58 @@ define('forum/zte-project', [
             
             rowsDevTmpObj = sortReverseObj(rowsDevTmpObj);
 
-            rowsDevTmpObj.forEach(function(item, index) {
-                if (index > 10) {
-                    return
+            var rowsMergeObj = {};
+            //合并名字重复的值
+            rowsDevTmpObj.forEach(function(item,index){
+
+                if(ajaxify.data.gitlabData.user_merge[item[1]]){
+                    var tmp = ajaxify.data.gitlabData.user_merge[item[1]];
+
+                    if(rowsMergeObj[tmp]){
+                        rowsMergeObj[tmp] += parseInt(item[0]); 
+                    }else{
+                        rowsMergeObj[tmp] = parseInt(item[0]); 
+                    }
+                }else{
+                    rowsMergeObj[item[1]] = parseInt(item[0]); 
+                }
+            })
+            var k = 0;
+            //取得每个人commits的百分值
+            for(var i in rowsMergeObj){
+                if(k > 10){
+                    break;
                 }
                 rowsDevLegendData.push({
-                    name: item[1] + " " + (item[0] / rowsDevTotalNums * 100).toFixed(2) + "%",
+                    name: i + " " + (rowsMergeObj[i] / rowsDevTotalNums * 100).toFixed(2) + "%",
                     textStyle: {
                         fontFamily: "Microsoft YaHei",
                         fontSize: "13"
                     }
                 });
                 rowsDevSeriesData.push({
-                    value: item[0],
-                    name: item[1] + " " + (item[0] / rowsDevTotalNums * 100).toFixed(2) + "%"
+                    value: rowsMergeObj[i],
+                    name: i + " " + (rowsMergeObj[i] / rowsDevTotalNums * 100).toFixed(2) + "%"
                 })
-            })
+                k++
+            }
+
+            // rowsDevTmpObj.forEach(function(item, index) {
+            //     if (index > 10) {
+            //         return
+            //     }
+            //     rowsDevLegendData.push({
+            //         name: item[1] + " " + (item[0] / rowsDevTotalNums * 100).toFixed(2) + "%",
+            //         textStyle: {
+            //             fontFamily: "Microsoft YaHei",
+            //             fontSize: "13"
+            //         }
+            //     });
+            //     rowsDevSeriesData.push({
+            //         value: item[0],
+            //         name: item[1] + " " + (item[0] / rowsDevTotalNums * 100).toFixed(2) + "%"
+            //     })
+            // })
         }
 
         var rowsDevChart = echarts.init(document.getElementById('rows-dev-echarts'));
