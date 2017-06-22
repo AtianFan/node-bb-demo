@@ -276,6 +276,11 @@ define('forum/zte-subproject', [
 
         var actChart = echarts.init(document.getElementById('act-echarts'));
 		var actOption = {
+            title : {
+                text: fullYear + '年' + month + '月',
+                x: 'center',
+                y: 15
+            },
             backgroundColor: '#f5f5f5',
             tooltip : {
                 trigger: 'axis',

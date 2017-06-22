@@ -238,7 +238,7 @@ projectController.get = function (req, res, callback) {
 				});
 			},
 			function (cids, next) {
-				categories.getCategoriesFields(cids, ['name','slug','cid','readme','backgroundImage','link','bgColor','color'], function(err, relatCates){
+				categories.getCategoriesFields(cids, ['name','slug','cid','readme','image','link','bgColor','color'], function(err, relatCates){
 					if (err) {
 						return callback(err);
 					}
