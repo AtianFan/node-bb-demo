@@ -31,6 +31,8 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 		enableAutoComplete();
 
 		fillOutForm();
+
+		$(".footer-cont").hide();
 	};
 
 	function getSearchData() {

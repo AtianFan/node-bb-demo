@@ -464,6 +464,7 @@ app.cacheBuster = null;
 	app.handleSearch = function () {
 		var searchButton = $("#search-button"),
 			searchFields = $("#search-fields"),
+			searchIpt = $("#search-ipt"),
 			searchInput = $('#search-fields input');
 
 		$('#search-form .advanced-search-link').on('mousedown', function () {
@@ -472,6 +473,10 @@ app.cacheBuster = null;
 
 		$('#search-form').on('submit', dismissSearch);
 		searchInput.on('blur', dismissSearch);
+
+		searchIpt.on('mousedown', function (e) {
+			$('#search-form').submit();
+		})
 
 		function dismissSearch() {
 			searchFields.addClass('hidden');
@@ -490,6 +495,7 @@ app.cacheBuster = null;
 			e.stopPropagation();
 
 			app.prepareSearch();
+
 			return false;
 		});
 
