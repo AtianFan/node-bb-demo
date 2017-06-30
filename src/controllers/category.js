@@ -179,7 +179,7 @@ categoryController.get = function (req, res, callback) {
 					categoryData.tagWhitelistWhole.push(tmpObj)
 				})
 
-				if(categoryData.tagWhitelistWhole.length > 1){
+				if(categoryData.tagWhitelistWhole.length >= 1){
 					var tmpObj = {name:'全部'};
 					if(!req.query.tag){
 						tmpObj.on = 'on';
