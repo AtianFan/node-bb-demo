@@ -14,6 +14,7 @@ var plugins = require('../plugins');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
 var utils = require('../../public/src/utils');
+var categories = require('../categories');
 
 var topicsController = {};
 
@@ -126,6 +127,14 @@ topicsController.get = function (req, res, callback) {
 			topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
 			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
+		},
+		function (data, next) {
+			var cids = [data.topicData.cid];
+
+			categories.getTagWhitelist(cids, function(err,tagWhitelist){
+				data.topicData.tagWhitelist = tagWhitelist[0];
+				plugins.fireHook('filter:controllers.topic.get', data, next);
+			})
 		},
 		function (data, next) {
 

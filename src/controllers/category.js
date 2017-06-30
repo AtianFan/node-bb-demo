@@ -169,6 +169,23 @@ categoryController.get = function (req, res, callback) {
 
 				categoryData.tags = tags;
 				categoryData.relative_path = nconf.get('relative_path');
+				categoryData.tagWhitelistWhole = [];
+
+				categoryData.tagWhitelist.forEach(function(item,index){
+					var tmpObj = _.find(tags,function(n){return n.value == item});
+					if(req.query.tag && req.query.tag == item){
+						tmpObj.on = 'on';
+					}
+					categoryData.tagWhitelistWhole.push(tmpObj)
+				})
+
+				if(categoryData.tagWhitelistWhole.length > 1){
+					var tmpObj = {name:'全部'};
+					if(!req.query.tag){
+						tmpObj.on = 'on';
+					}
+					categoryData.tagWhitelistWhole.unshift(tmpObj);
+				}
 				
 				next(null, categoryData);
 			});
