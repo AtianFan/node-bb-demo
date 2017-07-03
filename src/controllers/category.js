@@ -172,7 +172,7 @@ categoryController.get = function (req, res, callback) {
 				categoryData.tagWhitelistWhole = [];
 
 				categoryData.tagWhitelist.forEach(function(item,index){
-					var tmpObj = _.find(tags,function(n){return n.value == item});
+					var tmpObj = {value:item};
 					if(req.query.tag && req.query.tag == item){
 						tmpObj.on = 'on';
 					}
