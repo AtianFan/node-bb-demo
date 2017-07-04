@@ -149,10 +149,14 @@
 						'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
 						'</span></a><a href="' + link + '"><small>' + child.name + '</small></a>';
 			}
-			html += '<span class="small-tag" title="贡献者">' + 
-					// '<i class="fa fa-tag"></i>' + category.totalTopicCount + '</span>' +
-					'<i class="iconfont icon-renshu"></i>' + total + '</span>' +
-					'<span class="small-tag" title="[[category:totalPostCount]]">' +
+			if(category.parentCid == '3'){
+				html += '<span class="small-tag" title="贡献者">' + 
+						'<i class="iconfont icon-renshu"></i>' + total + '</span>';
+			}else{
+				html += '<span class="small-tag" title="[[category:totalTopicCount]]">' + 
+						'<i class="fa fa-tag"></i>' + category.totalTopicCount + '</span>';
+			}
+			html += '<span class="small-tag" title="[[category:totalPostCount]]">' +
 					'<i class="fa fa-file-text-o"></i>' + child.totalPostCount + '</span></div>'
 		});
 		// html = html ? ('<div class="category-children">' + html + '</div>') : html;
