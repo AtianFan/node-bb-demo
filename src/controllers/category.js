@@ -217,6 +217,8 @@ categoryController.get = function (req, res, callback) {
 
 				categoryData.recommendCategorys = _.sortBy(categoryData.recommendCategorys, function(data) { return - data.totalTopicCount;});
 
+				categoryData.recommendCategorys.splice(6,categoryData.recommendCategorys.length-6);
+
 				next(null, categoryData);
 			})
 			// categories.getAllCategories(1, function(err, data) {
