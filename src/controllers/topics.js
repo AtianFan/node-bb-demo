@@ -26,7 +26,9 @@ topicsController.get = function (req, res, callback) {
 	var settings;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
-		return callback();
+		req.params.slug = req.params.slug + '/' + req.params.post_index;
+		req.params.post_index = null;
+		// return callback();
 	}
 
 	async.waterfall([

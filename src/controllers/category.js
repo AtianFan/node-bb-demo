@@ -25,7 +25,9 @@ categoryController.get = function (req, res, callback) {
 	var settings;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
-		return callback();
+		req.params.slug = req.params.slug + '/' + req.params.topic_index;
+		req.params.topic_index = null;
+		// return callback();
 	}
 
 	async.waterfall([

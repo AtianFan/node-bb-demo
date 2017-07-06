@@ -149,7 +149,7 @@
 						'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
 						'</span></a><a href="' + link + '"><small>' + child.name + '</small></a>';
 			}
-			if(child.parentCid == '3'){
+			if(category.parentCid == '3'){
 				html += '<span class="small-tag" title="贡献者">' + 
 						'<i class="iconfont icon-renshu"></i>' + total + '</span>';
 			}else{
