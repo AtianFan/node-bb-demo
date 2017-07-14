@@ -15,7 +15,7 @@
 * UI界面个性化
 
 ### 怎样贡献
-请联系杨学书或者辛璟奋加入，本项目给予nodejs，socket.io开发
+请联系杨学书或者辛璟奋加入，本项目基于nodejs，socket.io开发
 
 
 # <img alt="NodeBB" src="http://i.imgur.com/mYxPPtB.png" />
