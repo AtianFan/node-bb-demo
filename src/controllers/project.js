@@ -255,32 +255,9 @@ projectController.get = function (req, res, callback) {
 						selfIndex = index;
 					}
 				})
-				
-				// var i = 0;
-				// async.whilst(  
-				// 	function() {  
-				// 		return i < relatCates.length; 
-				// 	},  
-				// 	function(next1) {  
-				// 		if(relatCates[i].readme){
-				// 			plugins.fireHook('filter:parse.post', {postData: {content:relatCates[i].readme}}, function (err, data) {
-				// 				if (err) {
-				// 					return callback(err);
-				// 				}
-
-				// 				relatCates[i].readme = translator.escape(data.postData.content).slice(0,100);
-				// 				i++;  
-
-				// 				next1();
-				// 			});
-				// 		}
-				// 	},  
-				// 	function(err) { 
-						relatCates.splice(selfIndex,1);
-						categoryData.relatCates = relatCates;
-						project.getProjectData(categoryData.cid,next);
-				// 	}  
-				// )
+				relatCates.splice(selfIndex,1);
+				categoryData.relatCates = relatCates;
+				project.getProjectData(categoryData.cid,next);
 			},
 			function (projectData, next) {
 
