@@ -159,6 +159,42 @@ topicsController.get = function (req, res, callback) {
 			});
 		},
 		function (topicData, next) {
+			helpers.setTopicRootCid(topicData.cid, function(err, rootCid){
+				if (err) {
+					return next(err);
+				}
+
+				topicData.rootCid = rootCid;
+
+				topics.setTopicField(topicData.tid, 'rootCid', rootCid, function(err,data){
+					if (err) {
+						return next(err);
+					}
+					next(null, topicData);
+				})
+			})
+		},
+		//临时，设置所有topic的rootCid属性
+		// function (topicData, next) {
+		// 	topics.getTopicsFromSet('topics:tid', 1, 0, -1, function(err, data){
+		// 		data.topics.forEach(function(item,index){
+		// 			console.log(item)
+		// 			helpers.setTopicRootCid(item.cid, function(err, rootCid){
+		// 				if (err) {
+		// 					return next(err);
+		// 				}
+
+		// 				topics.setTopicField(item.tid, 'rootCid', rootCid, function(err,topic){
+		// 					if (err) {
+		// 						return next(err);
+		// 					}
+		// 				})
+		// 			})
+		// 		})
+		// 		next(null, topicData);
+		// 	})
+		// },
+		function (topicData, next) {
 			function findPost(index) {
 				for(var i = 0; i < topicData.posts.length; ++i) {
 					if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {

@@ -8,21 +8,17 @@ var db = require('../database');
 var privileges = require('../privileges');
 var user = require('../user');
 var categories = require('../categories');
-var project = require('../project');
-var http = require('http');
-var url = require('url');
 var meta = require('../meta');
-var plugins = require('../plugins');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../../public/src/utils');
-var translator = require('../../public/src/modules/translator');
+var topics = require('../topics');
+var _ = require('underscore');
 
+var squareController = {};
 
-var projectController = {};
-
-projectController.get = function (req, res, callback) {
-	var cid = req.params.project;
+squareController.get = function (req, res, callback) {
+	var cid = req.params.category_id;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
 	var userPrivileges;
@@ -143,18 +139,16 @@ projectController.get = function (req, res, callback) {
 			var breadcrumbs = [
 				{
 					text: categoryData.name,
-					url: nconf.get('relative_path') + '/' + (categoryData.tpl == '3' ? 'project' : 'category') + '/' + categoryData.slug
+					url: nconf.get('relative_path') + '/category/' + categoryData.slug
 				}
 			];
 			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, function (err, crumbs) {
 				if (err) {
 					return next(err);
 				}
-
 				if(categoryData.tpl == '3'){
-					crumbs[crumbs.length-1].url = crumbs[crumbs.length-1].url.replace('category', 'project');
+					crumbs[crumbs.length - 1].url = undefined;
 				}
-
 				categoryData.breadcrumbs = crumbs.concat(breadcrumbs);
 				next(null, categoryData);
 			});
@@ -168,6 +162,80 @@ projectController.get = function (req, res, callback) {
 			categories.getRecentTopicReplies(allCategories, req.uid, function (err) {
 				next(err, categoryData);
 			});
+		},
+		function (categoryData, next) {
+			topics.getTags(0, 8 - 1, function(err, tags) {
+				if (err) {
+					return callback(err);
+				}
+
+				categoryData.tags = tags;
+				categoryData.relative_path = nconf.get('relative_path');
+				categoryData.tagWhitelistWhole = [];
+
+				categoryData.tagWhitelist.forEach(function(item,index){
+					var tmpObj = {value:item};
+					if(req.query.tag && req.query.tag == item){
+						tmpObj.on = 'on';
+					}
+					categoryData.tagWhitelistWhole.push(tmpObj)
+				})
+
+				if(categoryData.tagWhitelistWhole.length >= 1){
+					var tmpObj = {name:'全部'};
+					if(!req.query.tag){
+						tmpObj.on = 'on';
+					}
+					categoryData.tagWhitelistWhole.unshift(tmpObj);
+				}
+				
+				next(null, categoryData);
+			});
+		},
+		function (categoryData, next) {
+			var cids = [];
+			cids.push(categoryData.breadcrumbs[1].url.split('/')[2]);
+			categories.getChildren(cids, 1, function(err, data){
+				if (err) {
+					return callback(err);
+				}
+
+				categoryData.recommendCategorys = [];
+
+				function recursiveCategories(cates){
+					cates.forEach(function(category){
+						if(category.children.length > 0){
+							categoryData.recommendCategorys = categoryData.recommendCategorys.concat(category.children);
+							recursiveCategories(category.children)
+						}
+					})
+				}
+
+				recursiveCategories(data[0]);
+
+				categoryData.recommendCategorys = _.filter(categoryData.recommendCategorys,function(item){
+					return item.cid != categoryData.cid
+				})
+
+				categoryData.recommendCategorys = _.sortBy(categoryData.recommendCategorys, function(data) { return - data.totalTopicCount;});
+
+				categoryData.recommendCategorys.splice(6,categoryData.recommendCategorys.length-6);
+
+				next(null, categoryData);
+			})
+			// categories.getAllCategories(1, function(err, data) {
+			// 	if (err) {
+			// 		return callback(err);
+			// 	}
+
+			// 	categoryData.recommendCategorys = _.sortBy(data, function(data) { return - data.totalTopicCount;});
+			// 	categoryData.recommendCategorys = _.filter(categoryData.recommendCategorys, function(data) {
+			// 		return data.parentCid != '0' && data.parentCid != '2';
+			// 	});
+			// 	categoryData.recommendCategorys.splice(6,categoryData.recommendCategorys.length-6);
+
+			// 	next(null, categoryData);
+			// })
 		}
 	], function (err, categoryData) {
 		if (err) {
@@ -229,193 +297,11 @@ projectController.get = function (req, res, callback) {
 			res.locals.linkTags.push(rel);
 		});
 
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRange('cid:' + categoryData.parentCid + ':children', 0, -1, function (err, cids) {
-					if (err) {
-						return callback(err);
-					}
+		categoryData.tplName = 'zte-square';
 
-					next(null, cids);
-				});
-			},
-			function (cids, next) {
-				categories.getCategoriesFields(cids, ['name','slug','cid','readme','image','link','bgColor','color','description'], function(err, relatCates){
-					if (err) {
-						return callback(err);
-					}
-					next(null, relatCates);
-
-				})
-			},
-			function (relatCates,next) {
-				var selfIndex = 0;
-				relatCates.forEach(function(item,index){
-					if(item.cid == categoryData.cid){
-						selfIndex = index;
-					}
-				})
-				
-				// var i = 0;
-				// async.whilst(  
-				// 	function() {  
-				// 		return i < relatCates.length; 
-				// 	},  
-				// 	function(next1) {  
-				// 		if(relatCates[i].readme){
-				// 			plugins.fireHook('filter:parse.post', {postData: {content:relatCates[i].readme}}, function (err, data) {
-				// 				if (err) {
-				// 					return callback(err);
-				// 				}
-
-				// 				relatCates[i].readme = translator.escape(data.postData.content).slice(0,100);
-				// 				i++;  
-
-				// 				next1();
-				// 			});
-				// 		}
-				// 	},  
-				// 	function(err) { 
-						relatCates.splice(selfIndex,1);
-						categoryData.relatCates = relatCates;
-						project.getProjectData(categoryData.cid,next);
-				// 	}  
-				// )
-			},
-			function (projectData, next) {
-
-				if(categoryData.readme){
-					var tempData = {
-						content : categoryData.readme
-					}
-
-					plugins.fireHook('filter:parse.post', {postData: tempData}, function (err, data) {
-						if (err) {
-							return callback(err);
-						}
-
-						categoryData.content = translator.escape(data.postData.content);
-
-						next(null, projectData);
-					});
-				}else{
-					next(null, projectData);
-				}
-
-			}
-		],  function (err, projectData) {
-			categoryData.project = projectData;
-			
-			var tplName = '';
-
-			switch(categoryData.tpl){
-				case '2':
-					tplName = 'zte-project';
-					var childrenArr = [];
-
-					categoryData.children.forEach(function(item,index){
-						if(item.gitlabLink){
-							childrenArr.push(url.parse(item.gitlabLink).pathname.replace('.git',''));
-						}
-					})
-
-					var host = meta.config['serviceUrl'];
-
-					if(!categoryData.gitlabLink){
-						categoryData.gitlabLink = 'http://gitlab.ztesoft.com/ngweb';
-					}
-
-					var	project_path_name = url.parse(categoryData.gitlabLink).pathname;
-
-					var options = {  
-						hostname: url.parse(host).hostname, 
-						port: url.parse(host).port,
-						path: '/total?repo=' + project_path_name + '&children=' + childrenArr.toString(),
-						method: 'GET'  
-					};  
-
-					var gitlabData = '';
-
-					var req_g = http.request(options, function (res_g) {  
-						res_g.on('data', function (chunk) {  
-							gitlabData += chunk;  
-						}).on('end', function(){
-							categoryData.gitlabData = JSON.parse(gitlabData);
-							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
-							categoryData.gitlabData.projects.forEach(function(item,index){
-								item.major.name = item.major.name.replace(/@[\s\S]*/g,'');
-							})
-
-							res.render(tplName, categoryData);
-						})  
-					});  
-					
-					req_g.on('error', function (e) {  
-						console.log('problem with request: ' + e.message);
-					});  
-					
-					req_g.end(); 
-					break;
-				case '3':
-					tplName = 'zte-subproject';
-
-					var host = meta.config['serviceUrl'];
-
-					if(!categoryData.gitlabLink){
-						res.render(tplName, categoryData);
-						return;
-					}
-					var	project_path_name = url.parse(categoryData.gitlabLink).pathname;
-
-					var options = {  
-						hostname: url.parse(host).hostname, 
-						port: url.parse(host).port,
-						path: '/stat?repo=' + project_path_name,
-						method: 'GET'  
-					};  
-
-					var gitlabData = '';
-
-					var req_g = http.request(options, function (res_g) {  
-						res_g.on('data', function (chunk) {  
-							gitlabData += chunk;  
-						}).on('end', function(){
-							categoryData.gitlabData = JSON.parse(gitlabData);
-							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
-							categoryData.gitlabData.last_activity_at = categoryData.gitlabData.last_activity_at.replace(/T[\s\S]*/g,'');
-							categoryData.gitlabData.issues.all = parseInt(categoryData.gitlabData.issues.open) + parseInt(categoryData.gitlabData.issues.closed);
-							categoryData.gitlabData.milestones.all = parseInt(categoryData.gitlabData.milestones.active) + parseInt(categoryData.gitlabData.milestones.closed);
-
-							var size = categoryData.gitlabData.repository.repository_size
-							if (size < 1024) {
-								categoryData.gitlabData.repository.repository_size = size + ' B';
-							} else if (size < 1024 * 1024) {
-								categoryData.gitlabData.repository.repository_size = (size / 1024).toFixed(2) + ' KB';
-							} else {
-								categoryData.gitlabData.repository.repository_size = (size / 1024 / 1024).toFixed(2) + ' MB';
-							}
-
-							categoryData.lastTopic = categoryData.topics[categoryData.topics.length - 1];
-
-							db.setObjectField("category:" + categoryData.cid, "contributors",categoryData.gitlabData.contributors.member_contributions.length,function(){
-								res.render(tplName, categoryData);
-							})
-						})  
-					});  
-					
-					req_g.on('error', function (e) {  
-						console.log('problem with request: ' + e.message);  
-					});  
-					
-					req_g.end(); 
-					break;
-			}
-
-		})
-
-		
+		res.render(categoryData.tplName, categoryData);
 	});
 };
 
 
-module.exports = projectController;
+module.exports = squareController;

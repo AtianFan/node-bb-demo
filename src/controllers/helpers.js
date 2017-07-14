@@ -101,6 +101,7 @@ helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 	});
 };
 
+
 helpers.buildBreadcrumbs = function (crumbs) {
 	var breadcrumbs = [
 		{
@@ -133,6 +134,20 @@ helpers.buildTitle = function (pageTitle) {
 	});
 	return title;
 };
+
+helpers.setTopicRootCid = function (cid, callback) {
+	categories.getCategoryField(cid, 'parentCid', function(err,data){
+		if(err){
+			callback(null,err)
+		}
+
+		if(data != '0' && data){
+			helpers.setTopicRootCid(data,callback)
+		}else{
+			callback(null, cid)
+		}
+	})
+}
 
 helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 	async.waterfall([

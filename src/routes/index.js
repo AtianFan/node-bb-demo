@@ -75,6 +75,10 @@ function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/project/:project/:slug?', middleware, [], controllers.project.get);
 }
 
+function squareRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/square/:category_id/:slug?', middleware, [], controllers.square.get);
+}
+
 function userRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 
@@ -135,6 +139,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	globalModRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);
+	squareRoutes(router, middleware, controllers);
 	accountRoutes(router, middleware, controllers);
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
