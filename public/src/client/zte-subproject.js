@@ -220,15 +220,30 @@ define('forum/zte-subproject', [
         var date = new Date();
 	    var fullYear = date.getFullYear();
 	    var month = date.getMonth();
+	    var day = date.getDate();
 	    var firstDay = new Date(fullYear,month,1);
 	    var oneDay= 1000*60*60*24;
 	    var preMonthLastDay = new Date(firstDay - oneDay).getDate();
+        var preDate = new Date(fullYear,month,(day-30));
+        var preDay = preDate.getDate();
+        var preMonth = preDate.getMonth();
 	    var xAxisData = [];
 	    var seriesData = [];
 
-		for(var j = 0; j < preMonthLastDay; j++){
-			//创建[1,2,3,4...,31]数组
-			xAxisData[j] = j + 1;
+		// for(var j = 0; j < preMonthLastDay; j++){
+		// 	//创建[1,2,3,4...,31]数组
+		// 	xAxisData[j] = j + 1;
+		// 	//创建[0,0,0...,0]数组
+		// 	seriesData[j] = 0;
+		// }
+
+        for(var j = 0; j < 30; j++){
+            if((preDay + j) <= preMonthLastDay){
+                //创建[1,2,3,4...,31]数组
+                xAxisData[j] = (preMonth + 1) + '-' + (preDay + j);
+            }else{
+                xAxisData[j] = (month + 1) + '-' + (preDay + j - preMonthLastDay);
+            }
 			//创建[0,0,0...,0]数组
 			seriesData[j] = 0;
 		}
@@ -271,13 +286,14 @@ define('forum/zte-subproject', [
 		$("#create-at").html("项目年龄：" + concatTime(runYear,'年') + concatTime(runMonth,'个月') + concatTime(runDay,'天'));
 		$("#aver-total").html('平均每天提交次数：' + Math.floor(ajaxify.data.gitlabData.repository.commit_count / totalDay));
 		$("#commits-durations").html("最近一个月提交总次数：" + commitsNum);
-		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/preMonthLastDay));
+		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/30));
 		$("#authors-durations").html("贡献者：" + commitsPeopleNum);
+		$("#last-edit").html("最近一次提交时间：" + fullYear + '-' + xAxisData[xAxisData.length-1]);
 
         var actChart = echarts.init(document.getElementById('act-echarts'));
 		var actOption = {
             title : {
-                text: fullYear + '年' + month + '月',
+                text: '最近30天',
                 x: 'center',
                 y: 15
             },
