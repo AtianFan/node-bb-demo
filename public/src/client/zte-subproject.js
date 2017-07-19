@@ -10,6 +10,7 @@ define('forum/zte-subproject', [
 
 		SubProject.cssSet();
 		$('.project-body').removeClass('hidden');
+        SubProject.eventSet();
 		SubProject.echarts();
 
 		$(".contribute span").click(function(e){
@@ -44,6 +45,28 @@ define('forum/zte-subproject', [
 		$('.contribute-div,#act-echarts,.project-body .content').css('width',(winWidth*0.76-padLeft-50));
 		$('.contribute span').css('margin-right',50);
 	}
+
+    SubProject.eventSet = function () {
+        var content = $('.project-body .content');
+        if(content.height() > 300){
+            $('.project-body #content-collapse').removeClass('hidden');
+            content.css('height','300px').addClass('content-inner');
+        }
+
+        $('#content-collapse').on('click', function(e){
+            var $this = $(this);
+            if(content.hasClass('content-inner')){
+                content.css('height','auto').removeClass('content-inner');
+                $this.find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+                $this.find('span').html('关闭');
+            }else{
+                content.css('height','300px').addClass('content-inner');
+                $this.find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+                $this.find('span').html('展开');
+            }
+        })
+
+    }
 
 	SubProject.echarts = function () {
 		var commitsLegendData = [];

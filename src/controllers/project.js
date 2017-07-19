@@ -342,7 +342,12 @@ projectController.get = function (req, res, callback) {
 						res.render(tplName, categoryData);
 						return;
 					}
+
 					var	project_path_name = url.parse(categoryData.gitlabLink).pathname;
+
+					if(categoryData.gitlabWiki){
+						project_path_name = project_path_name + '&wiki=' +categoryData.gitlabWiki;
+					}
 
 					var options = {  
 						hostname: url.parse(host).hostname, 
@@ -362,6 +367,10 @@ projectController.get = function (req, res, callback) {
 							categoryData.gitlabData.last_activity_at = categoryData.gitlabData.last_activity_at.replace(/T[\s\S]*/g,'');
 							categoryData.gitlabData.issues.all = parseInt(categoryData.gitlabData.issues.open) + parseInt(categoryData.gitlabData.issues.closed);
 							categoryData.gitlabData.milestones.all = parseInt(categoryData.gitlabData.milestones.active) + parseInt(categoryData.gitlabData.milestones.closed);
+
+							if(categoryData.gitlabData.wikiContent){
+								categoryData.content = categoryData.gitlabData.wikiContent;
+							}
 
 							var size = categoryData.gitlabData.repository.repository_size
 							if (size < 1024) {
