@@ -56,7 +56,7 @@ squareController.get = function (req, res, callback) {
 			}
 
 			if (!res.locals.isAPI && (!req.params.slug || results.categoryData.slug !== cid + '/' + req.params.slug) && (results.categoryData.slug && results.categoryData.slug !== cid + '/')) {
-				return helpers.redirect(res, '/category/' + results.categoryData.slug);
+				return helpers.redirect(res, '/square/' + results.categoryData.slug);
 			}
 
 			settings = results.userSettings;
@@ -65,12 +65,12 @@ squareController.get = function (req, res, callback) {
 			pageCount = Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
 
 			if (topicIndex < 0 || topicIndex > Math.max(topicCount - 1, 0)) {
-				return helpers.redirect(res, '/category/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
+				return helpers.redirect(res, '/square/' + cid + '/' + req.params.slug + (topicIndex > topicCount ? '/' + topicCount : ''));
 			}
 
-			if (settings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
-				return callback();
-			}
+			// if (settings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
+			// 	return callback();
+			// }
 
 			if (!settings.usePagination) {
 				topicIndex = Math.max(topicIndex - (settings.topicsPerPage - 1), 0);
@@ -124,6 +124,29 @@ squareController.get = function (req, res, callback) {
 						}
 					}
 					categories.getCategoryById(payload, next);
+					
+				},
+				function (categoryData, next) {
+					topics.getRecentTopics(null, payload.targetUid, start, stop, null, function (err, data) {
+						if (err) {
+							return callback(err);
+						}
+
+						categoryData.topic_count = data.topicCount;
+
+						var newTopic = [];
+						newTopic = data.topics.filter(function(item,index){
+							return item.rootCid == categoryData.cid;
+						})
+						for (var i = 0; i < newTopic.length; ++i) {
+							newTopic[i].index = start + i;
+						}
+						categoryData.topics = newTopic;
+
+						categories.modifyTopicsByPrivilege(data.topics, results.privileges);
+
+						next(null, categoryData);
+					});
 				}
 			], next);
 		},
