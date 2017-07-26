@@ -82,7 +82,8 @@ define('forum/account/header', [
 					title: '[[user:upload_cover_picture]]',
 					route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadcover',
 					params: {uid: ajaxify.data.uid },
-					accept: '.png,.jpg,.bmp'
+					accept: '.png,.jpg,.bmp',
+					fileSize: 2048
 				}, function (imageUrlOnServer) {
 					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?v=' + Date.now() + ')');
 				});
