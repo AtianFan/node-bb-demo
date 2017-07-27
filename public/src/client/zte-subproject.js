@@ -265,7 +265,7 @@ define('forum/zte-subproject', [
                 //创建[1,2,3,4...,31]数组
                 xAxisData[j] = (preMonth + 1) + '-' + (preDay + j);
             }else{
-                xAxisData[j] = (month + 1) + '-' + (preDay + j - preMonthLastDay);
+                xAxisData[j] = (month + 1) + '-' + ((preDay + j - preMonthLastDay) < 10 ? '0' + (preDay + j - preMonthLastDay) : (preDay + j - preMonthLastDay));
             }
 			//创建[0,0,0...,0]数组
 			seriesData[j] = 0;
@@ -276,8 +276,15 @@ define('forum/zte-subproject', [
 
 		if(ajaxify.data.gitlabData){
 			for(var i in ajaxify.data.gitlabData.commits){
+                var arr = i.slice(5,10).split('-');
+                var location = 0;
+                if(parseInt(arr[0]) > month){
+                    location = (preMonthLastDay - preDay) + parseInt(arr[1])
+                }else if(parseInt(arr[0]) == month){
+                    location = parseInt(arr[1]) - preDay
+                }
 				//取2017-04-01T00:00.000+08:00中的day数值
-				seriesData[parseInt(i.slice(8,10))-1]++;
+				seriesData[location]++;
 				commitsNum++
 			}
             for(var i in ajaxify.data.gitlabData.commitsPeople){
