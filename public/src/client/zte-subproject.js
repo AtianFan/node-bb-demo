@@ -280,6 +280,7 @@ define('forum/zte-subproject', [
                 var location = 0;
                 if(parseInt(arr[0]) > month){
                     location = (preMonthLastDay - preDay) + parseInt(arr[1])
+                    location = location > 30 ? location - 30 : location;
                 }else if(parseInt(arr[0]) == month){
                     location = parseInt(arr[1]) - preDay
                 }
