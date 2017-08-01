@@ -111,6 +111,20 @@ var privileges = require('./privileges');
 		], callback);
 	};
 
+	Categories.getChildrenAndCategoriesAndByPrivilege = function (cids, uid, privilege, callback) {
+		async.waterfall([
+			function (next) {
+				privileges.categories.filterCids(privilege, cids, uid, next);
+			},
+			function (cids, next) {
+				if(cids.length == 0){
+					cids = [0];
+				}
+				Categories.getChildren(cids, uid, next);
+			}
+		], callback);
+	};
+
 	Categories.getModerators = function (cid, callback) {
 		Groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, function (err, uids) {
 			if (err || !Array.isArray(uids) || !uids.length) {

@@ -15,7 +15,10 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
 	* remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	*/
+	var allowTypeArr = 'bmp,gif,jpeg,png,psd,tiff,WebP,SVG';
 	filename = filename.split('.');
+	var existFile = allowTypeArr.indexOf(filename[1]);
+	
 	filename.forEach(function (name, idx) {
 		filename[idx] = utils.slugify(name);
 	});
@@ -30,13 +33,20 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	var fileData = {};
 
 	is.on('end', function (data) {
-		var dimensions = sizeOf(uploadPath);
+		if(existFile != -1){
+			var dimensions = sizeOf(uploadPath);
 		
-		callback(null, {
-			url: nconf.get('upload_url') + '/' + folder + '/' + filename,
-			path: uploadPath,
-			dimensions: dimensions
-		});
+			callback(null, {
+				url: nconf.get('upload_url') + '/' + folder + '/' + filename,
+				path: uploadPath,
+				dimensions: dimensions
+			});
+		}else{
+
+			callback(null, {
+				url: nconf.get('upload_url') + '/' + folder + '/' + filename
+			});
+		}
 	});
 
 	os.on('error', callback);

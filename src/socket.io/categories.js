@@ -149,6 +149,10 @@ SocketCategories.getCategoriesByPrivilege = function (socket, privilege, callbac
 	categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege, callback);
 };
 
+SocketCategories.getChildrenAndCategoriesAndByPrivilege = function (socket, data, callback) {
+	categories.getChildrenAndCategoriesAndByPrivilege(data.parentCids, socket.uid, data.privilege, callback);
+};
+
 SocketCategories.getMoveCategories = function (socket, data, callback) {
 	async.parallel({
 		isAdmin: async.apply(user.isAdministrator, socket.uid),

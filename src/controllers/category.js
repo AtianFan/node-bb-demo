@@ -25,7 +25,9 @@ categoryController.get = function (req, res, callback) {
 	var settings;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
-		return callback();
+		req.params.slug = req.params.slug + '/' + req.params.topic_index;
+		req.params.topic_index = null;
+		// return callback();
 	}
 
 	async.waterfall([
@@ -169,24 +171,71 @@ categoryController.get = function (req, res, callback) {
 
 				categoryData.tags = tags;
 				categoryData.relative_path = nconf.get('relative_path');
+				categoryData.tagWhitelistWhole = [];
+
+				categoryData.tagWhitelist.forEach(function(item,index){
+					var tmpObj = {value:item};
+					if(req.query.tag && req.query.tag == item){
+						tmpObj.on = 'on';
+					}
+					categoryData.tagWhitelistWhole.push(tmpObj)
+				})
+
+				if(categoryData.tagWhitelistWhole.length >= 1){
+					var tmpObj = {name:'全部'};
+					if(!req.query.tag){
+						tmpObj.on = 'on';
+					}
+					categoryData.tagWhitelistWhole.unshift(tmpObj);
+				}
 				
 				next(null, categoryData);
 			});
 		},
 		function (categoryData, next) {
-			categories.getAllCategories(1, function(err, data) {
+			var cids = [];
+			cids.push(categoryData.breadcrumbs[1].url.split('/')[2]);
+			categories.getChildren(cids, 1, function(err, data){
 				if (err) {
 					return callback(err);
 				}
 
-				categoryData.recommendCategorys = _.sortBy(data, function(data) { return - data.totalTopicCount;});
-				categoryData.recommendCategorys = _.filter(categoryData.recommendCategorys, function(data) {
-					return data.parentCid != '0' && data.parentCid != '2';
-				});
+				categoryData.recommendCategorys = [];
+
+				function recursiveCategories(cates){
+					cates.forEach(function(category){
+						if(category.children.length > 0){
+							categoryData.recommendCategorys = categoryData.recommendCategorys.concat(category.children);
+							recursiveCategories(category.children)
+						}
+					})
+				}
+
+				recursiveCategories(data[0]);
+
+				categoryData.recommendCategorys = _.filter(categoryData.recommendCategorys,function(item){
+					return item.cid != categoryData.cid
+				})
+
+				categoryData.recommendCategorys = _.sortBy(categoryData.recommendCategorys, function(data) { return - data.totalTopicCount;});
+
 				categoryData.recommendCategorys.splice(6,categoryData.recommendCategorys.length-6);
 
 				next(null, categoryData);
 			})
+			// categories.getAllCategories(1, function(err, data) {
+			// 	if (err) {
+			// 		return callback(err);
+			// 	}
+
+			// 	categoryData.recommendCategorys = _.sortBy(data, function(data) { return - data.totalTopicCount;});
+			// 	categoryData.recommendCategorys = _.filter(categoryData.recommendCategorys, function(data) {
+			// 		return data.parentCid != '0' && data.parentCid != '2';
+			// 	});
+			// 	categoryData.recommendCategorys.splice(6,categoryData.recommendCategorys.length-6);
+
+			// 	next(null, categoryData);
+			// })
 		}
 	], function (err, categoryData) {
 		if (err) {

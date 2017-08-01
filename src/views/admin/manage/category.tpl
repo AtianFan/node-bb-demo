@@ -107,10 +107,18 @@
 							</div><br />
 							<div class="col-sm-8 col-xs-12">
 								<div class="form-group">
+									<label for="cid-{category.cid}-gitlabWiki">
+										wiki介绍地址
+									</label>
+									<input id="cid-{category.cid}-gitlabWiki" type="text" class="form-control" placeholder="gitlab项目的wiki地址" data-name="gitlabWiki" value="{category.gitlabWiki}" />
+								</div>
+							</div><br />
+							<div class="col-sm-8 col-xs-12">
+								<div class="form-group">
 									<label for="cid-{category.cid}-gitlabLink">
 										站点演示
 									</label>
-									<input id="cid-{category.cid}-webLink" type="text" class="form-control" placeholder="http://http://fish.ztesoft.com/fish-show/..." data-name="webLink" value="{category.webLink}" />
+									<input id="cid-{category.cid}-webLink" type="text" class="form-control" placeholder="http://fish.ztesoft.com/fish-show/..." data-name="webLink" value="{category.webLink}" />
 								</div>
 							</div>
 						</fieldset>

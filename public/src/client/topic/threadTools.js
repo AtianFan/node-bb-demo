@@ -179,17 +179,12 @@ define('forum/topic/threadTools', [
 				return;
 			}
 
-			var postEl = $this.parents('[data-pid]');
-			
-
 			socket.emit('topics.loadTopicTools', {tid: ajaxify.data.tid, cid: ajaxify.data.cid}, function (err, data) {
 				if (err) {
 					return app.alertError(err);
 				}
 
-				if(postEl.length > 0){
-					data.revoke = !data.isBignews ? true : false;
-				}
+				data.revoke = !data.isBignews ? true : false;
 
 				templates.parse('partials/topic/topic-menu-list', data, function (html) {
 					translator.translate(html, function (html) {

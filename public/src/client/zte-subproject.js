@@ -10,6 +10,7 @@ define('forum/zte-subproject', [
 
 		SubProject.cssSet();
 		$('.project-body').removeClass('hidden');
+        SubProject.eventSet();
 		SubProject.echarts();
 
 		$(".contribute span").click(function(e){
@@ -45,38 +46,77 @@ define('forum/zte-subproject', [
 		$('.contribute span').css('margin-right',50);
 	}
 
+    SubProject.eventSet = function () {
+        var content = $('.project-body .content');
+        if(content.height() > 300){
+            $('.project-body #content-collapse').removeClass('hidden');
+            content.css('height','300px').addClass('content-inner');
+        }
+
+        $('#content-collapse').on('click', function(e){
+            var $this = $(this);
+            if(content.hasClass('content-inner')){
+                content.css('height','auto').removeClass('content-inner');
+                $this.find('i').removeClass('fa-angle-double-down').addClass('fa-angle-double-up');
+                $this.find('span').html('关闭');
+            }else{
+                content.css('height','300px').addClass('content-inner');
+                $this.find('i').removeClass('fa-angle-double-up').addClass('fa-angle-double-down');
+                $this.find('span').html('展开');
+            }
+        })
+
+    }
+
 	SubProject.echarts = function () {
 		var commitsLegendData = [];
 		var commitsSeriesData = [];
 		var commitsOthers = 0;
 		var commitsTotalNums = 0;
 		if(ajaxify.data.gitlabData){
-			//取得commits的总和
-			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
-				commitsTotalNums += parseInt(item.commits);
-			})
 
             $("#commitsDevNum").html(ajaxify.data.gitlabData.contributors.member_contributions.length)
 
-			//取得每个人commits的百分值
-			ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
-				if(index < 10){
+            var member_contributionsObj = {};
+            //合并名字重复的值
+            ajaxify.data.gitlabData.contributors.member_contributions.forEach(function(item,index){
+                //取得commits的总和
+				commitsTotalNums += parseInt(item.commits);
+
+                if(ajaxify.data.gitlabData.user_merge[item.name]){
+                    var tmp = ajaxify.data.gitlabData.user_merge[item.name];
+
+                    if(member_contributionsObj[tmp]){
+                        member_contributionsObj[tmp] += parseInt(item.commits); 
+                    }else{
+                        member_contributionsObj[tmp] = parseInt(item.commits); 
+                    }
+                }else{
+                    member_contributionsObj[item.name] = parseInt(item.commits); 
+                }
+            })
+
+            var j = 0;
+            //取得每个人commits的百分值
+            for(var i in member_contributionsObj){
+				if(j < 10){
 					commitsLegendData.push({
-						name: item.name + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%',
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+						name: i + ' ' + (parseInt(member_contributionsObj[i])/commitsTotalNums*100).toFixed(2)+'%',
+	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
 					});
 					commitsSeriesData.push({
-						value: item.commits,
-						name: item.name + ' ' + (parseInt(item.commits)/commitsTotalNums*100).toFixed(2)+'%'
+						value: parseInt(member_contributionsObj[i]),
+						name: i + ' ' + (parseInt(member_contributionsObj[i])/commitsTotalNums*100).toFixed(2)+'%'
 					});
 				}else{
-					commitsOthers += parseInt(item.commits);
+					commitsOthers += parseInt(member_contributionsObj[i]);
 				}
-			})
+                j++;
+            }
 
 			commitsLegendData.push({
 				name: 'others ' + Math.floor(commitsOthers/commitsTotalNums*100)+'%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+                textStyle:{fontSize:'13'}
 			});
 			commitsSeriesData.push({
 				value: commitsOthers,
@@ -88,8 +128,7 @@ define('forum/zte-subproject', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
-                textStyle:{color:'#646464',fontSize : '14',},
+                y : 70,
                 formatter: function (name) {
                     var num = Math.ceil(commitsTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
                     return name.split(" ")[0] + ' ' +  num;
@@ -108,7 +147,7 @@ define('forum/zte-subproject', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
@@ -127,26 +166,39 @@ define('forum/zte-subproject', [
 		}
 
 		if(ajaxify.data.gitlabData){
-			//取得additions和deletions的总和
-			//取得每个人additions、deletions和的百分值
+            var commitRowsObj = {};
 			ajaxify.data.gitlabData.commitRows.forEach(function(item,index){
 				var itemArr = item.replace(/\s+/g," ").split(" ");
 				if(index < 14 && index > 3 && itemArr.length > 1){
-					rowsLegendData.push({
-						name: itemArr[2] + ' ' + itemArr[3],
-	                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
-					});
-					rowsSeriesData.push({
-						value: itemArr[1],
-						name: itemArr[2] + ' ' + itemArr[3]
-					});
+                    if(ajaxify.data.gitlabData.user_merge[itemArr[2]]){
+                        var tmp = ajaxify.data.gitlabData.user_merge[itemArr[2]];
+
+                        if(commitRowsObj[tmp]){
+                            commitRowsObj[tmp] += parseInt(itemArr[1]); 
+                        }else{
+                            commitRowsObj[tmp] = parseInt(itemArr[1]); 
+                        }
+                    }else{
+                        commitRowsObj[itemArr[2]] = parseInt(itemArr[1]); 
+                    }
 				}else if( index >= 14 && itemArr.length > 1){
 					rowsOthers += parseInt(itemArr[1]);
 				}
-			})
+            })
+            
+            for(var i in commitRowsObj){
+                rowsLegendData.push({
+                    name: i + ' ' + (parseInt(commitRowsObj[i])/rowsTotalNums*100).toFixed(2)+'%',
+                    textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
+                });
+                rowsSeriesData.push({
+                    value: parseInt(commitRowsObj[i]),
+                    name: i + ' ' + (parseInt(commitRowsObj[i])/rowsTotalNums*100).toFixed(2)+'%'
+                });
+            }
 			rowsLegendData.push({
 				name: 'others ' + (rowsOthers/rowsTotalNums*100).toFixed(2)+'%',
-                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'16'}
+                textStyle:{fontFamily:'Microsoft YaHei', fontSize:'13'}
 			});
 			rowsSeriesData.push({
 				value: rowsOthers,
@@ -159,8 +211,7 @@ define('forum/zte-subproject', [
             legend: {
                 orient : 'vertical',
                 x : 20,
-                y : 50,
-                textStyle:{color:'#646464',fontSize : '14',},
+                y : 70,
                 formatter: function (name) {
                     var num = Math.ceil(rowsTotalNums*(name.split(" ")[1].replace('%',''))*0.01);
                     return name.split(" ")[0] + ' ' +  num;
@@ -179,7 +230,7 @@ define('forum/zte-subproject', [
                     label: {
                         normal : {
                             textStyle: {
-                                fontSize : '16'
+                                fontSize : '14'
                             }
                         }
                     },
@@ -192,15 +243,30 @@ define('forum/zte-subproject', [
         var date = new Date();
 	    var fullYear = date.getFullYear();
 	    var month = date.getMonth();
+	    var day = date.getDate();
 	    var firstDay = new Date(fullYear,month,1);
 	    var oneDay= 1000*60*60*24;
 	    var preMonthLastDay = new Date(firstDay - oneDay).getDate();
+        var preDate = new Date(fullYear,month,(day-30));
+        var preDay = preDate.getDate();
+        var preMonth = preDate.getMonth();
 	    var xAxisData = [];
 	    var seriesData = [];
 
-		for(var j = 0; j < preMonthLastDay; j++){
-			//创建[1,2,3,4...,31]数组
-			xAxisData[j] = j + 1;
+		// for(var j = 0; j < preMonthLastDay; j++){
+		// 	//创建[1,2,3,4...,31]数组
+		// 	xAxisData[j] = j + 1;
+		// 	//创建[0,0,0...,0]数组
+		// 	seriesData[j] = 0;
+		// }
+
+        for(var j = 0; j < 30; j++){
+            if((preDay + j) <= preMonthLastDay){
+                //创建[1,2,3,4...,31]数组
+                xAxisData[j] = (preMonth + 1) + '-' + (preDay + j);
+            }else{
+                xAxisData[j] = (month + 1) + '-' + ((preDay + j - preMonthLastDay) < 10 ? '0' + (preDay + j - preMonthLastDay) : (preDay + j - preMonthLastDay));
+            }
 			//创建[0,0,0...,0]数组
 			seriesData[j] = 0;
 		}
@@ -210,8 +276,16 @@ define('forum/zte-subproject', [
 
 		if(ajaxify.data.gitlabData){
 			for(var i in ajaxify.data.gitlabData.commits){
+                var arr = i.slice(5,10).split('-');
+                var location = 0;
+                if(parseInt(arr[0]) > month){
+                    location = (preMonthLastDay - preDay) + parseInt(arr[1])
+                    location = location > 30 ? location - 30 : location;
+                }else if(parseInt(arr[0]) == month){
+                    location = parseInt(arr[1]) - preDay
+                }
 				//取2017-04-01T00:00.000+08:00中的day数值
-				seriesData[parseInt(i.slice(8,10))-1]++;
+				seriesData[location]++;
 				commitsNum++
 			}
             for(var i in ajaxify.data.gitlabData.commitsPeople){
@@ -219,13 +293,41 @@ define('forum/zte-subproject', [
             }
 		}
 
-		$("#time-durations").html("社区" + fullYear + "-" + month + "月份数据");
+        var createDate = ajaxify.data.gitlabData.create_time.replace(/T[\s\S]*/g,'');
+        var s1 = new Date(createDate.replace(/-/g, "/"));
+        var s2 = new Date();
+        var runTime = 0;
+
+        runTime = parseInt((s2.getTime() - s1.getTime()) / 1000);
+        var totalDay = Math.floor(runTime / 86400);
+        var runYear = Math.floor(runTime / 86400 / 365);
+        runTime = runTime % (86400 * 365);
+        var runMonth = Math.floor(runTime / 86400 / 30);
+        runTime = runTime % (86400 * 30);
+        var runDay = Math.floor(runTime / 86400);
+
+        function concatTime(num,str){
+            if(num != 0){
+                return num + str;
+            }else{
+                return '';
+            }
+        }
+
+		$("#create-at").html("项目年龄：" + concatTime(runYear,'年') + concatTime(runMonth,'个月') + concatTime(runDay,'天'));
+		$("#aver-total").html('平均每天提交次数：' + Math.floor(ajaxify.data.gitlabData.repository.commit_count / totalDay));
 		$("#commits-durations").html("最近一个月提交总次数：" + commitsNum);
-		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/preMonthLastDay));
+		$("#aver-durations").html("平均每天提交次数：" + Math.floor(commitsNum/30));
 		$("#authors-durations").html("贡献者：" + commitsPeopleNum);
+		$("#last-edit").html("最近一次提交时间：" + fullYear + '-' + xAxisData[xAxisData.length-1]);
 
         var actChart = echarts.init(document.getElementById('act-echarts'));
 		var actOption = {
+            title : {
+                text: '最近30天',
+                x: 'center',
+                y: 15
+            },
             backgroundColor: '#f5f5f5',
             tooltip : {
                 trigger: 'axis',

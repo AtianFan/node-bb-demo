@@ -29,7 +29,9 @@ projectController.get = function (req, res, callback) {
 	var settings;
 
 	if ((req.params.topic_index && !utils.isNumber(req.params.topic_index)) || !utils.isNumber(cid)) {
-		return callback();
+		req.params.slug = req.params.slug + '/' + req.params.topic_index;
+		req.params.topic_index = null;
+		// return callback();
 	}
 
 	async.waterfall([
@@ -238,7 +240,7 @@ projectController.get = function (req, res, callback) {
 				});
 			},
 			function (cids, next) {
-				categories.getCategoriesFields(cids, ['name','slug','cid','readme','backgroundImage','link','bgColor','color'], function(err, relatCates){
+				categories.getCategoriesFields(cids, ['name','slug','cid','readme','image','link','bgColor','color','description'], function(err, relatCates){
 					if (err) {
 						return callback(err);
 					}
@@ -251,9 +253,6 @@ projectController.get = function (req, res, callback) {
 				relatCates.forEach(function(item,index){
 					if(item.cid == categoryData.cid){
 						selfIndex = index;
-					}
-					if(item.readme){
-						item.readme = item.readme.slice(0,100);
 					}
 				})
 				relatCates.splice(selfIndex,1);
@@ -320,6 +319,9 @@ projectController.get = function (req, res, callback) {
 						}).on('end', function(){
 							categoryData.gitlabData = JSON.parse(gitlabData);
 							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
+							categoryData.gitlabData.projects.forEach(function(item,index){
+								item.major.name = item.major.name.replace(/@[\s\S]*/g,'');
+							})
 
 							res.render(tplName, categoryData);
 						})  
@@ -340,7 +342,12 @@ projectController.get = function (req, res, callback) {
 						res.render(tplName, categoryData);
 						return;
 					}
+
 					var	project_path_name = url.parse(categoryData.gitlabLink).pathname;
+
+					if(categoryData.gitlabWiki){
+						project_path_name = project_path_name + '&wiki=' +categoryData.gitlabWiki;
+					}
 
 					var options = {  
 						hostname: url.parse(host).hostname, 
@@ -357,8 +364,13 @@ projectController.get = function (req, res, callback) {
 						}).on('end', function(){
 							categoryData.gitlabData = JSON.parse(gitlabData);
 							categoryData.gitlabLink = categoryData.gitlabLink.replace('.git', '');
+							categoryData.gitlabData.last_activity_at = categoryData.gitlabData.last_activity_at.replace(/T[\s\S]*/g,'');
 							categoryData.gitlabData.issues.all = parseInt(categoryData.gitlabData.issues.open) + parseInt(categoryData.gitlabData.issues.closed);
 							categoryData.gitlabData.milestones.all = parseInt(categoryData.gitlabData.milestones.active) + parseInt(categoryData.gitlabData.milestones.closed);
+
+							if(categoryData.gitlabData.wikiContent){
+								categoryData.content = categoryData.gitlabData.wikiContent;
+							}
 
 							var size = categoryData.gitlabData.repository.repository_size
 							if (size < 1024) {

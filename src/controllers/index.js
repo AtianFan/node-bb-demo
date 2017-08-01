@@ -17,6 +17,7 @@ var Controllers = {
 	zteindex: require('./zteindex'),
 	category: require('./category'),
 	project: require('./project'),
+	square: require('./square'),
 	unread: require('./unread'),
 	recent: require('./recent'),
 	popular: require('./popular'),

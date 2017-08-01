@@ -14,6 +14,7 @@ var plugins = require('../plugins');
 var helpers = require('./helpers');
 var pagination = require('../pagination');
 var utils = require('../../public/src/utils');
+var categories = require('../categories');
 
 var topicsController = {};
 
@@ -25,7 +26,9 @@ topicsController.get = function (req, res, callback) {
 	var settings;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
-		return callback();
+		req.params.slug = req.params.slug + '/' + req.params.post_index;
+		req.params.post_index = null;
+		// return callback();
 	}
 
 	async.waterfall([
@@ -128,6 +131,14 @@ topicsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
 		},
 		function (data, next) {
+			var cids = [data.topicData.cid];
+
+			categories.getTagWhitelist(cids, function(err,tagWhitelist){
+				data.topicData.tagWhitelist = tagWhitelist[0];
+				plugins.fireHook('filter:controllers.topic.get', data, next);
+			})
+		},
+		function (data, next) {
 
 			var breadcrumbs = [
 				{
@@ -147,6 +158,42 @@ topicsController.get = function (req, res, callback) {
 				next(null, data.topicData);
 			});
 		},
+		function (topicData, next) {
+			helpers.setTopicRootCid(topicData.cid, function(err, rootCid){
+				if (err) {
+					return next(err);
+				}
+
+				topicData.rootCid = rootCid;
+
+				topics.setTopicField(topicData.tid, 'rootCid', rootCid, function(err,data){
+					if (err) {
+						return next(err);
+					}
+					next(null, topicData);
+				})
+			})
+		},
+		//临时，设置所有topic的rootCid属性
+		// function (topicData, next) {
+		// 	topics.getTopicsFromSet('topics:tid', 1, 0, -1, function(err, data){
+		// 		data.topics.forEach(function(item,index){
+		// 			console.log(item)
+		// 			helpers.setTopicRootCid(item.cid, function(err, rootCid){
+		// 				if (err) {
+		// 					return next(err);
+		// 				}
+
+		// 				topics.setTopicField(item.tid, 'rootCid', rootCid, function(err,topic){
+		// 					if (err) {
+		// 						return next(err);
+		// 					}
+		// 				})
+		// 			})
+		// 		})
+		// 		next(null, topicData);
+		// 	})
+		// },
 		function (topicData, next) {
 			function findPost(index) {
 				for(var i = 0; i < topicData.posts.length; ++i) {

@@ -8,6 +8,8 @@ var websockets = require('./index');
 var user = require('../user');
 var apiController = require('../controllers/api');
 var socketHelpers = require('./helpers');
+var categories = require('../categories');
+var privileges = require('../privileges');
 
 var SocketTopics = {};
 
@@ -107,6 +109,69 @@ SocketTopics.isModerator = function (socket, tid, callback) {
 
 SocketTopics.getTopic = function (socket, tid, callback) {
 	apiController.getTopicData(tid, socket.uid, callback);
+};
+
+SocketTopics.loadMore = function (socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	async.parallel({
+		privileges: function (next) {
+			privileges.categories.get(data.cid, socket.uid, next);
+		},
+		settings: function (next) {
+			user.getSettings(socket.uid, next);
+		},
+		targetUid: function (next) {
+			if (data.author) {
+				user.getUidByUserslug(data.author, next);
+			} else {
+				next();
+			}
+		}
+	}, function (err, results) {
+		var infScrollTopicsPerPage = 20;
+		var set = 'topics:recent';
+		var reverse = true;
+
+		var start = Math.max(0, parseInt(data.after, 10));
+
+		if (data.direction === -1) {
+			start = start - (reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage);
+		}
+
+		var stop = start + infScrollTopicsPerPage - 1;
+
+		start = Math.max(0, start);
+		stop = Math.max(0, stop);
+
+		topics.getRecentTopics(null, socket.uid, start, stop, null, function (err, res) {
+			if (err) {
+				return callback(err);
+			}
+			
+			var newTopic = [];
+			res.topics.forEach(function(item,index){
+				if(item.rootCid == data.cid){
+					newTopic.push(item);
+				}
+			})
+			
+			for (var i = 0; i < newTopic.length; ++i) {
+				newTopic[i].index = start + i;
+			}
+
+			res.topics = newTopic;
+
+			res.privileges = results.privileges;
+			res.template = {
+				category: true,
+				name: 'category'
+			};
+
+			callback(null, res);
+		});
+	})
 };
 
 module.exports = SocketTopics;
