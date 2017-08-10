@@ -10,6 +10,7 @@ var apiController = require('../controllers/api');
 var socketHelpers = require('./helpers');
 var categories = require('../categories');
 var privileges = require('../privileges');
+var fs = require('fs');
 
 var SocketTopics = {};
 
@@ -41,6 +42,47 @@ SocketTopics.post = function (socket, data, callback) {
 		socketHelpers.notifyNew(socket.uid, 'newTopic', {posts: [result.postData], topic: result.topicData});
 	});
 };
+
+SocketTopics.readjson = function (socket, callback) {
+	var topics = JSON.parse(fs.readFileSync('topics.json'));
+	var pics = JSON.parse(fs.readFileSync('pic.json'));
+	var data = {
+		topics: topics,
+		pics: pics
+	}
+	callback(null, data);
+}
+
+SocketTopics.batchpost = function (socket, dataArr, callback) {
+	if (!dataArr) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	var i = 0;
+
+	async.whilst(function () {
+		return i < dataArr.length;
+	}, function (next1) {
+		dataArr[i].uid = socket.uid;
+		dataArr[i].req = websockets.reqFromSocket(socket);
+		dataArr[i].timestamp = Date.now();
+
+		topics.post(dataArr[i], function (err, result) {
+			if (err) {
+				return callback(err);
+			}
+
+			socket.emit('event:new_post', {posts: [result.postData]});
+			socket.emit('event:new_topic', result.topicData);
+
+			socketHelpers.notifyNew(socket.uid, 'newTopic', {posts: [result.postData], topic: result.topicData});
+			i++;
+			next1()
+		});
+	}, function (err) {
+		callback(null, {});
+	});
+}
 
 SocketTopics.postcount = function (socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
