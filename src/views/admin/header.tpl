@@ -20,7 +20,7 @@
 			};
 		</script>
 
-		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.3/material.min.js"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/material.min.js"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/acp.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
