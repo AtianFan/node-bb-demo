@@ -325,7 +325,29 @@ topicsController.get = function (req, res, callback) {
 			topics.increaseViewCount(tid);
 			req.session.tids_viewed[tid] = Date.now();
 		}
+		
+		//临时处理迁移数据content中表格处理，只在浏览时改变为markdown格式
+		if(data.posts[0].content.indexOf('[/table]') != -1){
+			var content = data.posts[0].content;
+			// var re = content.match(/\[tr\](.+?)\[\/tr\]/ig);
+			// var tableTdNum = (re[0].split('td').length - 1)/2;
+			// var tableTrStr = '\n|';
+			// for(var i=0; i<tableTdNum; i++){
+			// 	tableTrStr += ' :------|';
+			// }
+			// content = content.replace(/\[tr\](.+?)\[\/tr\]/,function(str){return str + tableTrStr})
+			// 	.replace(/\[table=?.*?\]|\[\/table\]/gi,'')
+			// 	.replace(/\[tr=?.*?\]|\[\/td\]/gi,'')
+			// 	.replace(/\[td=?.*?\]|\[\/tr\]/gi,'|')
+			content = content.replace(/\[/gi,'<')
+						.replace(/\]/gi,'>')
+						.replace(/=(.+?)>/gi,function(str){return '>'})
+						.replace(/<br\s*\/>/gi,'')
+						.replace(/<table>/gi,'<table class="table table-bordered table-striped"><tbody>')
+						.replace(/\r|\n/g,'')
 
+			data.posts[0].content = content;
+		}
 		if (req.uid) {
 			topics.markAsRead([tid], req.uid, function (err, markedRead) {
 				if (err) {

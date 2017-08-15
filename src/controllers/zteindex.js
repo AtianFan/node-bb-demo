@@ -5,6 +5,7 @@ var nconf = require('nconf');
 var validator = require('validator');
 
 var categories = require('../categories');
+var privileges = require('../privileges');
 var meta = require('../meta');
 var helpers = require('./helpers');
 
@@ -39,6 +40,13 @@ zteindexController.list = function (req, res, next) {
 	var categoryData;
 	async.waterfall([
 		function (next) {
+			//让首页按照板块id=1的权限设置
+			privileges.categories.get(1, req.uid, next);
+		},
+		function (privileges, next) {
+			if(!privileges.read){
+				return helpers.notAllowed(req, res);
+			}
 			categories.getCategoriesByPrivilege('cid:0:children', req.uid, 'find', next);
 		},
 		function (_categoryData, next) {
