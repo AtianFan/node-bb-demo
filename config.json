@@ -1,5 +1,5 @@
 {
-    "url": "http://127.0.0.1:4567",
+    "url": "http://10.45.43.135:4567",
     "secret": "abc123",
     "database": "redis",
     "redis": {
