@@ -25,7 +25,12 @@ SocketTopics.post = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	data.uid = socket.uid;
+	if(data.isAnonymous){
+		data.uid = 0;
+	}else{
+		data.uid = socket.uid;
+	}
+	
 	data.req = websockets.reqFromSocket(socket);
 	data.timestamp = Date.now();
 
