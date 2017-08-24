@@ -118,12 +118,16 @@ module.exports = function (SocketUser) {
 		var oldUserData;
 		async.waterfall([
 			function (next) {
-				user.getUserFields(data.uid, ['email', 'username'], next);
+				user.getUserFields(data.uid, ['email', 'username', 'isHasEditUsername'], next);
 			},
 			function (_oldUserData, next) {
 				oldUserData = _oldUserData;
 				if (!oldUserData || !oldUserData.username) {
 					return next(new Error('[[error:invalid-data]]'));
+				}
+
+				if(_oldUserData.isHasEditUsername){
+					return next(new Error('不能再次修改用户名'));
 				}
 
 				async.parallel({
@@ -149,6 +153,11 @@ module.exports = function (SocketUser) {
 				}
 
 				user.updateProfile(data.uid, data, next);
+			},
+			function (userData, next) {
+				user.setUserField(data.uid, 'isHasEditUsername', true, function(data){
+					next(null, userData)
+				});
 			},
 			function (userData, next) {
 				function log(type, eventData) {
