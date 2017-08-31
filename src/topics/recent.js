@@ -154,7 +154,8 @@ module.exports = function (Topics) {
 			function (results, next) {
 				console.log('----------');
 				console.log(results.topicData.length);
-				console.log(results.topicData[500]);
+				console.log(results.topicData[1]);
+				console.log(results.topicData[1292]);
 				console.log('----------');
 				tids = results.topicData.filter(function (topic) {
 					if (topic) {
