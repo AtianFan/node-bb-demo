@@ -64,6 +64,7 @@ module.exports = function (Topics) {
 			function (tids, next) {
 				filterTidsByRootcid(tids, uid, filter, rootCid, next);
 				console.log(tids.length);
+				console.log(rootCid);
 			},
 			function (tids, next) {
 				recentTopics.topicCount = tids.length;
@@ -151,6 +152,9 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (results, next) {
+				console.log('----------');
+				console.log(results.topicData.length);
+				console.log('----------');
 				tids = results.topicData.filter(function (topic) {
 					if (topic) {
 						return results.ignoredCids.indexOf(topic.cid.toString()) === -1;
