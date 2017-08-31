@@ -136,6 +136,7 @@ squareController.get = function (req, res, callback) {
 
 						var newTopic = [];
 						console.log(data.topics.length)
+						console.log(data.topics)
 						console.log(categoryData.cid)
 						newTopic = data.topics.filter(function(item,index){
 							return item.rootCid == categoryData.cid;
