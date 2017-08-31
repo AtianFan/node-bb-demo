@@ -63,18 +63,14 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				filterTidsByRootcid(tids, uid, filter, rootCid, next);
-				console.log(tids.length);
-				console.log(rootCid);
 			},
 			function (tids, next) {
 				recentTopics.topicCount = tids.length;
-				console.log(tids.length);
 				tids = tids.slice(start, stop + 1);
 				Topics.getTopicsByTids(tids, uid, next);
 			},
 			function (topicData, next) {
 				recentTopics.topics = topicData;
-				console.log(topicData);
 				recentTopics.nextStart = stop + 1;
 				next(null, recentTopics);
 			}
