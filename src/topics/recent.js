@@ -58,7 +58,7 @@ module.exports = function (Topics) {
 				if (cid) {
 					categories.getTopicIds(cid, 'cid:' + cid + ':tids', true, 0, 199, next);
 				} else {
-					db.getSortedSetRevRange('topics:recent', 0, 2000, next);
+					db.getSortedSetRevRange('topics:recent', 0, 3000, next);
 				}
 			},
 			function (tids, next) {
