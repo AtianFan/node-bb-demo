@@ -127,26 +127,27 @@ squareController.get = function (req, res, callback) {
 					
 				},
 				function (categoryData, next) {
-					topics.getRecentTopics(null, payload.targetUid, start, stop, null, function (err, data) {
+					topics.getRecentTopicsByRootcid(null, payload.targetUid, start, stop, null, categoryData.cid, function (err, data) {
 						if (err) {
 							return callback(err);
 						}
 
 						categoryData.topic_count = data.topicCount;
 
-						var newTopic = [];
-						console.log(data.topics.length)
-						console.log(data.topics)
-						console.log(categoryData.cid)
-						newTopic = data.topics.filter(function(item,index){
-							return item.rootCid == categoryData.cid;
-						})
-						for (var i = 0; i < newTopic.length; ++i) {
-							newTopic[i].index = start + i;
+						// var newTopic = [];
+						// newTopic = data.topics.filter(function(item,index){
+						// 	return item.rootCid == categoryData.cid;
+						// })
+						// for (var i = 0; i < newTopic.length; ++i) {
+						// 	newTopic[i].index = start + i;
+						// }
+						// categoryData.topics = newTopic;
+
+						for (var i = 0; i < data.topics.length; ++i) {
+							data.topics[i].index = start + i;
 						}
-						categoryData.topics = newTopic;
-						console.log(newTopic)
-						console.log(results.privileges)
+
+						categoryData.topics = data.topics;
 
 						categories.modifyTopicsByPrivilege(data.topics, results.privileges);
 

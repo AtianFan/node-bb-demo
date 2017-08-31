@@ -221,4 +221,58 @@ SocketTopics.loadMore = function (socket, data, callback) {
 	})
 };
 
+SocketTopics.loadMoreByRootcid = function (socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	async.parallel({
+		privileges: function (next) {
+			privileges.categories.get(data.cid, socket.uid, next);
+		},
+		settings: function (next) {
+			user.getSettings(socket.uid, next);
+		},
+		targetUid: function (next) {
+			if (data.author) {
+				user.getUidByUserslug(data.author, next);
+			} else {
+				next();
+			}
+		}
+	}, function (err, results) {
+		var infScrollTopicsPerPage = 20;
+		var set = 'topics:recent';
+		var reverse = true;
+
+		var start = Math.max(0, parseInt(data.after, 10));
+
+		if (data.direction === -1) {
+			start = start - (reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage);
+		}
+
+		var stop = start + infScrollTopicsPerPage - 1;
+
+		start = Math.max(0, start);
+		stop = Math.max(0, stop);
+
+		topics.getRecentTopicsByRootcid(null, socket.uid, start, stop, null, data.cid, function (err, res) {
+			if (err) {
+				return callback(err);
+			}
+			
+			for (var i = 0; i < res.topics.length; ++i) {
+				res.topics[i].index = start + i;
+			}
+
+			res.privileges = results.privileges;
+			res.template = {
+				category: true,
+				name: 'category'
+			};
+
+			callback(null, res);
+		});
+	})
+};
+
 module.exports = SocketTopics;

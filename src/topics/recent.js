@@ -47,6 +47,36 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
+	Topics.getRecentTopicsByRootcid = function (cid, uid, start, stop, filter, rootCid, callback) {
+		var recentTopics = {
+			nextStart : 0,
+			topics: []
+		};
+
+		async.waterfall([
+			function (next) {
+				if (cid) {
+					categories.getTopicIds(cid, 'cid:' + cid + ':tids', true, 0, 199, next);
+				} else {
+					db.getSortedSetRevRange('topics:recent', 0, 2000, next);
+				}
+			},
+			function (tids, next) {
+				filterTidsByRootcid(tids, uid, filter, rootCid, next);
+			},
+			function (tids, next) {
+				recentTopics.topicCount = tids.length;
+				tids = tids.slice(start, stop + 1);
+				Topics.getTopicsByTids(tids, uid, next);
+			},
+			function (topicData, next) {
+				recentTopics.topics = topicData;
+				recentTopics.nextStart = stop + 1;
+				next(null, recentTopics);
+			}
+		], callback);
+	};
+
 
 	function filterTids(tids, uid, filter, callback) {
 		async.waterfall([
@@ -90,6 +120,52 @@ module.exports = function (Topics) {
 		], callback);
 	}
 
+	function filterTidsByRootcid(tids, uid, filter, rootCid, callback) {
+		async.waterfall([
+			function (next) {
+				if (filter === 'watched') {
+					Topics.filterWatchedTids(tids, uid, next);
+				} else if (filter === 'new') {
+					Topics.filterNewTids(tids, uid, next);
+				} else {
+					Topics.filterNotIgnoredTids(tids, uid, next);
+				}
+			},
+			function (tids, next) {
+				privileges.topics.filterTids('read', tids, uid, next);
+			},
+			function (tids, next) {
+				async.parallel({
+					ignoredCids: function (next) {
+						if (filter === 'watched') {
+							return next(null, []);
+						}
+						user.getIgnoredCategories(uid, next);
+					},
+					topicData: function (next) {
+						Topics.getTopicsFields(tids, ['tid', 'cid', 'rootCid'], next);
+					}
+				}, next);
+			},
+			function (results, next) {
+				tids = results.topicData.filter(function (topic) {
+					if (topic) {
+						return results.ignoredCids.indexOf(topic.cid.toString()) === -1;
+					} else {
+						return false;
+					}
+				}).filter(function (topic) {
+					if(topic && topic.rootCid){
+						return topic.rootCid == rootCid;
+					}
+				}).map(function (topic) {
+					return topic.tid;
+				});
+
+				next(null, tids);
+			}
+		], callback);
+	}
 
 	Topics.getLatestTopics = function (uid, start, stop, term, callback) {
 		async.waterfall([

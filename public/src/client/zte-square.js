@@ -272,7 +272,7 @@ define('forum/zte-square', [
 
 		$(window).trigger('action:category.loading');
 		var params = utils.params();
-		infinitescroll.loadMore('topics.loadMore', {
+		infinitescroll.loadMore('topics.loadMoreByRootcid', {
 			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
