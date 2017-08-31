@@ -144,6 +144,8 @@ squareController.get = function (req, res, callback) {
 							newTopic[i].index = start + i;
 						}
 						categoryData.topics = newTopic;
+						console.log(newTopic)
+						console.log(results.privileges)
 
 						categories.modifyTopicsByPrivilege(data.topics, results.privileges);
 
