@@ -127,7 +127,6 @@ module.exports = function (Topics) {
 	function filterTidsByRootcid(tids, uid, filter, rootCid, callback) {
 		async.waterfall([
 			function (next) {
-				console.log(filter);
 				if (filter === 'watched') {
 					Topics.filterWatchedTids(tids, uid, next);
 				} else if (filter === 'new') {
@@ -136,12 +135,11 @@ module.exports = function (Topics) {
 					Topics.filterNotIgnoredTids(tids, uid, next);
 				}
 			},
+			// function (tids, next) {
+			//	//过滤游客，游客是否可以浏览帖子
+			// 	privileges.topics.filterTids('read', tids, uid, next);
+			// },
 			function (tids, next) {
-				console.log(tids.length);
-				privileges.topics.filterTids('read', tids, uid, next);
-			},
-			function (tids, next) {
-				console.log(tids.length);
 				async.parallel({
 					ignoredCids: function (next) {
 						if (filter === 'watched') {
@@ -155,14 +153,6 @@ module.exports = function (Topics) {
 				}, next);
 			},
 			function (results, next) {
-				console.log('----------');
-				console.log(results.topicData.length);
-				console.log(results.topicData[0]);
-				console.log(results.topicData[1]);
-				console.log(results.topicData[2]);
-				console.log(results.topicData[3]);
-				console.log(results.topicData[1293]);
-				console.log('----------');
 				tids = results.topicData.filter(function (topic) {
 					if (topic) {
 						return results.ignoredCids.indexOf(topic.cid.toString()) === -1;
